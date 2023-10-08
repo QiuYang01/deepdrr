@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.annotations package &mdash; DeepDRR函数调用文档 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9d604193"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="deepdrr.device package" href="deepdrr.device.html" />
+    <link rel="prev" title="deepdrr package" href="deepdrr.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DeepDRR函数调用文档
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="deepdrr.html">deepdrr package</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">deepdrr.annotations package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.annotations.fiducials">deepdrr.annotations.fiducials</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.annotations.fiducials.Fiducial"><code class="docutils literal notranslate"><span class="pre">Fiducial</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList"><code class="docutils literal notranslate"><span class="pre">FiducialList</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.annotations.line_annotation">deepdrr.annotations.line_annotation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.annotations.line_annotation.LineAnnotation"><code class="docutils literal notranslate"><span class="pre">LineAnnotation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.annotations">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.annotations.Fiducial"><code class="docutils literal notranslate"><span class="pre">Fiducial</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.annotations.FiducialList"><code class="docutils literal notranslate"><span class="pre">FiducialList</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.annotations.LineAnnotation"><code class="docutils literal notranslate"><span class="pre">LineAnnotation</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.device.html">deepdrr.device package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.geo.html">deepdrr.geo package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.instruments.html">deepdrr.instruments package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.html">deepdrr.projector package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.utils.html">deepdrr.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.vol.html">deepdrr.vol package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.downsample_tool">deepdrr.downsample_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom">deepdrr.load_dicom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom_tool">deepdrr.load_dicom_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.logging">deepdrr.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.network_segmentation">deepdrr.network_segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.segmentation">deepdrr.segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.vis">deepdrr.vis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeepDRR函数调用文档</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="deepdrr.html">deepdrr package</a></li>
+      <li class="breadcrumb-item active">deepdrr.annotations package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/deepdrr.annotations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deepdrr-annotations-package">
+<h1>deepdrr.annotations package<a class="headerlink" href="#deepdrr-annotations-package" title="Permalink to this heading"></a></h1>
+<section id="module-deepdrr.annotations.fiducials">
+<span id="deepdrr-annotations-fiducials"></span><h2>deepdrr.annotations.fiducials<a class="headerlink" href="#module-deepdrr.annotations.fiducials" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.Fiducial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.annotations.fiducials.</span></span><span class="sig-name descname"><span class="pre">Fiducial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.Fiducial" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point3D</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.Fiducial.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.annotations.fiducials.Fiducial.data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.Fiducial.from_fcsv">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial.from_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.Fiducial.from_fcsv" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.Fiducial.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.Fiducial.from_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.Fiducial.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.Fiducial.save" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.FiducialList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.annotations.fiducials.</span></span><span class="sig-name descname"><span class="pre">FiducialList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anatomical_coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'RAS'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'LPS'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'RAS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.FiducialList" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.FiducialList.from_fcsv">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList" title="deepdrr.annotations.fiducials.FiducialList"><span class="pre">FiducialList</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.from_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.FiducialList.from_fcsv" title="Permalink to this definition"></a></dt>
+<dd><p>Load a FCSV file from Slicer3D</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – Path to the FCSV file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of 3D points</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.FiducialList.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.FiducialList.from_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.FiducialList.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.FiducialList.save" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.FiducialList.to_LPS">
+<span class="sig-name descname"><span class="pre">to_LPS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList" title="deepdrr.annotations.fiducials.FiducialList"><span class="pre">FiducialList</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.to_LPS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.FiducialList.to_LPS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.fiducials.FiducialList.to_RAS">
+<span class="sig-name descname"><span class="pre">to_RAS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList" title="deepdrr.annotations.fiducials.FiducialList"><span class="pre">FiducialList</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.to_RAS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.fiducials.FiducialList.to_RAS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.annotations.line_annotation">
+<span id="deepdrr-annotations-line-annotation"></span><h2>deepdrr.annotations.line_annotation<a class="headerlink" href="#module-deepdrr.annotations.line_annotation" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.annotations.line_annotation.</span></span><span class="sig-name descname"><span class="pre">LineAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anatomical_coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Really a “segment annotation”, but Slicer calls it a line.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.startpoint">
+<span class="sig-name descname"><span class="pre">startpoint</span></span><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.startpoint" title="Permalink to this definition"></a></dt>
+<dd><p>The startpoint in anatomical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point" title="deepdrr.geo.Point">geo.Point</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.endpoint">
+<span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.endpoint" title="Permalink to this definition"></a></dt>
+<dd><p>The endpoint in anatomical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point" title="deepdrr.geo.Point">geo.Point</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.anatomical_coordinate_system">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anatomical_coordinate_system</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.anatomical_coordinate_system" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.anatomical_from_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anatomical_from_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.anatomical_from_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.direction_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">direction_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.direction_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.endpoint_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">endpoint_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.endpoint_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.from_fcsv">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.line_annotation.LineAnnotation" title="deepdrr.annotations.line_annotation.LineAnnotation"><span class="pre">LineAnnotation</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.from_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.from_fcsv" title="Permalink to this definition"></a></dt>
+<dd><p>Load a LineAnnotation from a .fcsv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – Path to the .fcsv file.</p></li>
+<li><p><strong>world_from_anatomical</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.FrameTransform" title="deepdrr.geo.FrameTransform"><em>geo.FrameTransform</em></a><em>]</em><em>, </em><em>optional</em>) – The pose of the volume in world coordinates. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded annotation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#deepdrr.annotations.line_annotation.LineAnnotation" title="deepdrr.annotations.line_annotation.LineAnnotation">LineAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anatomical_coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.line_annotation.LineAnnotation" title="deepdrr.annotations.line_annotation.LineAnnotation"><span class="pre">LineAnnotation</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.from_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.from_markup">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_markup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.from_markup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.from_markup" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.get_direction">
+<span class="sig-name descname"><span class="pre">get_direction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.get_direction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.get_direction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.get_mesh">
+<span class="sig-name descname"><span class="pre">get_mesh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.get_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.get_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Get the mesh in anatomical coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.get_mesh_in_world">
+<span class="sig-name descname"><span class="pre">get_mesh_in_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cached</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PolyData</span></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.get_mesh_in_world"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.get_mesh_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.midpoint_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">midpoint_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.midpoint_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1.0,</span> <span class="pre">0.5000076295109483,</span> <span class="pre">0.5000076295109483]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the Line annotation to a mrk.json file, which can be opened by 3D Slicer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Output path to the file.</p></li>
+<li><p><strong>color</strong> (<em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – The color of the saved annotation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.startpoint_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">startpoint_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.startpoint_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.trajectory_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">trajectory_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.trajectory_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.line_annotation.LineAnnotation.world_from_anatomical">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_from_anatomical</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a></em><a class="headerlink" href="#deepdrr.annotations.line_annotation.LineAnnotation.world_from_anatomical" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.annotations">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deepdrr.annotations" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.annotations.Fiducial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.annotations.</span></span><span class="sig-name descname"><span class="pre">Fiducial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.Fiducial" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Point3D</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.annotations.Fiducial.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.annotations.Fiducial.data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.Fiducial.from_fcsv">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial.from_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.Fiducial.from_fcsv" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.Fiducial.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.Fiducial.from_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.Fiducial.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#Fiducial.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.Fiducial.save" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.annotations.FiducialList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.annotations.</span></span><span class="sig-name descname"><span class="pre">FiducialList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anatomical_coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'RAS'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'LPS'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'RAS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.FiducialList" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.FiducialList.from_fcsv">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList" title="deepdrr.annotations.fiducials.FiducialList"><span class="pre">FiducialList</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.from_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.FiducialList.from_fcsv" title="Permalink to this definition"></a></dt>
+<dd><p>Load a FCSV file from Slicer3D</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – Path to the FCSV file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of 3D points</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.FiducialList.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.FiducialList.from_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.FiducialList.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.FiducialList.save" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.FiducialList.to_LPS">
+<span class="sig-name descname"><span class="pre">to_LPS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList" title="deepdrr.annotations.fiducials.FiducialList"><span class="pre">FiducialList</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.to_LPS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.FiducialList.to_LPS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.FiducialList.to_RAS">
+<span class="sig-name descname"><span class="pre">to_RAS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.fiducials.FiducialList" title="deepdrr.annotations.fiducials.FiducialList"><span class="pre">FiducialList</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/fiducials.html#FiducialList.to_RAS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.FiducialList.to_RAS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.annotations.</span></span><span class="sig-name descname"><span class="pre">LineAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anatomical_coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Really a “segment annotation”, but Slicer calls it a line.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.startpoint">
+<span class="sig-name descname"><span class="pre">startpoint</span></span><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.startpoint" title="Permalink to this definition"></a></dt>
+<dd><p>The startpoint in anatomical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point" title="deepdrr.geo.Point">geo.Point</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.endpoint">
+<span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.endpoint" title="Permalink to this definition"></a></dt>
+<dd><p>The endpoint in anatomical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point" title="deepdrr.geo.Point">geo.Point</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.anatomical_coordinate_system">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anatomical_coordinate_system</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.anatomical_coordinate_system" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.anatomical_from_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anatomical_from_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.anatomical_from_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.direction_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">direction_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.direction_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.endpoint_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">endpoint_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.endpoint_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.from_fcsv">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.line_annotation.LineAnnotation" title="deepdrr.annotations.line_annotation.LineAnnotation"><span class="pre">LineAnnotation</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.from_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.from_fcsv" title="Permalink to this definition"></a></dt>
+<dd><p>Load a LineAnnotation from a .fcsv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – Path to the .fcsv file.</p></li>
+<li><p><strong>world_from_anatomical</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.FrameTransform" title="deepdrr.geo.FrameTransform"><em>geo.FrameTransform</em></a><em>]</em><em>, </em><em>optional</em>) – The pose of the volume in world coordinates. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded annotation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#deepdrr.annotations.LineAnnotation" title="deepdrr.annotations.LineAnnotation">LineAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_from_anatomical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anatomical_coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.annotations.line_annotation.LineAnnotation" title="deepdrr.annotations.line_annotation.LineAnnotation"><span class="pre">LineAnnotation</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.from_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.from_markup">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_markup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.from_markup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.from_markup" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.get_direction">
+<span class="sig-name descname"><span class="pre">get_direction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.get_direction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.get_direction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.get_mesh">
+<span class="sig-name descname"><span class="pre">get_mesh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.get_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.get_mesh" title="Permalink to this definition"></a></dt>
+<dd><p>Get the mesh in anatomical coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.get_mesh_in_world">
+<span class="sig-name descname"><span class="pre">get_mesh_in_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cached</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PolyData</span></span></span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.get_mesh_in_world"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.get_mesh_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.midpoint_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">midpoint_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.midpoint_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1.0,</span> <span class="pre">0.5000076295109483,</span> <span class="pre">0.5000076295109483]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/annotations/line_annotation.html#LineAnnotation.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the Line annotation to a mrk.json file, which can be opened by 3D Slicer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Output path to the file.</p></li>
+<li><p><strong>color</strong> (<em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – The color of the saved annotation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.startpoint_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">startpoint_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.startpoint_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.trajectory_in_world">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">trajectory_in_world</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.trajectory_in_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.annotations.LineAnnotation.world_from_anatomical">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_from_anatomical</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a></em><a class="headerlink" href="#deepdrr.annotations.LineAnnotation.world_from_anatomical" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deepdrr.html" class="btn btn-neutral float-left" title="deepdrr package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deepdrr.device.html" class="btn btn-neutral float-right" title="deepdrr.device package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 自用.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

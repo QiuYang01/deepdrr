@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.annotations.line_annotation &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.annotations.line_annotation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.annotations.line_annotation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pyvista</span> <span class="k">as</span> <span class="nn">pv</span>
+
+<span class="kn">from</span> <span class="nn">.fiducials</span> <span class="kn">import</span> <span class="n">FiducialList</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">geo</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..vol</span> <span class="kn">import</span> <span class="n">Volume</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># TODO: make this totally independent of the Volume it corresponds to, and make a super-class for</span>
+<span class="c1"># all annotations.</span>
+
+
+<div class="viewcode-block" id="LineAnnotation"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation">[docs]</a><span class="k">class</span> <span class="nc">LineAnnotation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Really a &quot;segment annotation&quot;, but Slicer calls it a line.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        startpoint (geo.Point): The startpoint in anatomical coordinates.</span>
+<span class="sd">        endpoint (geo.Point): The endpoint in anatomical coordinates.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">startpoint</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">volume</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Volume</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">world_from_anatomical</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">anatomical_coordinate_system</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Line Annotation.</span>
+
+<span class="sd">        Must provide either the volume this relies on, or the minimal attributes (pose of volume in world and coordinate system).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            startpoint (geo.Point): The startpoint in anatomical coordinates.</span>
+<span class="sd">            endpoint (geo.Point): The endpoint in anatomical coordinates.</span>
+<span class="sd">            volume (Optional[Volume], optional): The volume, with a given pose. If not provided, must provide `world_from_anatomical` and `anatomical_coordinate_system`. Defaults to None.</span>
+<span class="sd">            world_from_anatomical (Optional[geo.FrameTransform], optional): [description]. Defaults to None.</span>
+<span class="sd">            anatomical_coordinate_system (Optional[str], optional): [description]. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># all points in anatomical coordinates, matching the provided volume.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">startpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span>
+        <span class="k">if</span> <span class="n">volume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">world_from_anatomical</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">anatomical_coordinate_system</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s2">&quot;RAS&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;LPS&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_anatomical_coordinate_system</span> <span class="o">=</span> <span class="n">anatomical_coordinate_system</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_world_from_anatomical</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">frame_transform</span><span class="p">(</span><span class="n">world_from_anatomical</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="s2">&quot;annotation points must have matching dim&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;LineAnnotation(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">anatomical_coordinate_system</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anatomical_coordinate_system</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">anatomical_coordinate_system</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">world_from_anatomical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_world_from_anatomical</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">world_from_anatomical</span>
+
+<div class="viewcode-block" id="LineAnnotation.from_json"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">volume</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Volume</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">world_from_anatomical</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">anatomical_coordinate_system</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineAnnotation</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">ann</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">volume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">world_from_anatomical</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">anatomical_coordinate_system</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">),</span> <span class="s2">&quot;must supply the anatomical transform&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">anatomical_coordinate_system</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">anatomical_coordinate_system</span>
+            <span class="n">world_from_anatomical</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">world_from_anatomical</span>
+
+        <span class="n">control_points</span> <span class="o">=</span> <span class="n">ann</span><span class="p">[</span><span class="s2">&quot;markups&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;controlPoints&quot;</span><span class="p">]</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">cp</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">cp</span> <span class="ow">in</span> <span class="n">control_points</span><span class="p">]</span>
+
+        <span class="n">coordinate_system</span> <span class="o">=</span> <span class="n">ann</span><span class="p">[</span><span class="s2">&quot;markups&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;coordinateSystem&quot;</span><span class="p">]</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loading markup with coordinate system: </span><span class="si">{</span><span class="n">coordinate_system</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">anatomical_coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;LPS&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;LPS&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;RAS&quot;</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;converting to LPS&quot;</span><span class="p">)</span>
+                <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">LPS_from_RAS</span> <span class="o">@</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">elif</span> <span class="n">anatomical_coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;RAS&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;LPS&quot;</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;converting to RAS&quot;</span><span class="p">)</span>
+                <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">RAS_from_LPS</span> <span class="o">@</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;RAS&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;annotation may not be in correct coordinate system. &quot;</span>
+                <span class="s2">&quot;Unable to check against provided volume, probably &quot;</span>
+                <span class="s2">&quot;because volume was created manually. Proceed with caution.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">points</span><span class="p">,</span>
+            <span class="n">volume</span><span class="o">=</span><span class="n">volume</span><span class="p">,</span>
+            <span class="n">world_from_anatomical</span><span class="o">=</span><span class="n">world_from_anatomical</span><span class="p">,</span>
+            <span class="n">anatomical_coordinate_system</span><span class="o">=</span><span class="n">anatomical_coordinate_system</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineAnnotation.from_markup"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.from_markup">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_markup</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineAnnotation.from_fcsv"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.from_fcsv">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_fcsv</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineAnnotation</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a LineAnnotation from a .fcsv file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (Path): Path to the .fcsv file.</span>
+<span class="sd">            world_from_anatomical (Optional[geo.FrameTransform], optional): The pose of the volume in world coordinates. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            LineAnnotation: The loaded annotation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fiducial_list</span> <span class="o">=</span> <span class="n">FiducialList</span><span class="o">.</span><span class="n">from_fcsv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fiducial_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;fcsv file must contain exactly two points&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">fiducial_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">fiducial_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineAnnotation.save"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5000076295109484</span><span class="p">,</span> <span class="mf">0.5000076295109484</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the Line annotation to a mrk.json file, which can be opened by 3D Slicer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Output path to the file.</span>
+<span class="sd">            color (List[int], optional): The color of the saved annotation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">to_lps</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;LPS&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_coordinate_system</span> <span class="o">==</span> <span class="s2">&quot;RAS&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">LPS_from_RAS</span> <span class="o">@</span> <span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+
+        <span class="c1"># log.info(f&quot;start, end: {self.startpoint, self.endpoint}&quot;)</span>
+        <span class="c1"># log.info(</span>
+        <span class="c1">#     f&quot;start, end in world: {self.startpoint_in_world, self.endpoint_in_world}&quot;</span>
+        <span class="c1"># )</span>
+
+        <span class="n">markup</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;@schema&quot;</span><span class="p">:</span> <span class="s2">&quot;https://raw.githubusercontent.com/slicer/slicer/master/Modules/Loadable/Markups/Resources/Schema/markups-schema-v1.0.0.json#&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;markups&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Line&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;coordinateSystem&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_coordinate_system</span><span class="p">,</span>
+                    <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">&quot;labelFormat&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;%N-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;controlPoints&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;startpoint&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;associatedNodeID&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span><span class="p">),</span>
+                            <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="mf">0.0</span><span class="p">,</span>
+                                <span class="mf">0.0</span><span class="p">,</span>
+                                <span class="mf">1.0</span><span class="p">,</span>
+                            <span class="p">],</span>
+                            <span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                            <span class="s2">&quot;visibility&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;positionStatus&quot;</span><span class="p">:</span> <span class="s2">&quot;defined&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;endpoint&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;associatedNodeID&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">),</span>
+                            <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="mf">0.0</span><span class="p">,</span>
+                                <span class="mf">0.0</span><span class="p">,</span>
+                                <span class="mf">1.0</span><span class="p">,</span>
+                            <span class="p">],</span>
+                            <span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                            <span class="s2">&quot;visibility&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;positionStatus&quot;</span><span class="p">:</span> <span class="s2">&quot;defined&quot;</span><span class="p">,</span>
+                        <span class="p">},</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;measurements&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">124.90054351814699</span><span class="p">,</span>
+                            <span class="s2">&quot;printFormat&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">%-#4.4g</span><span class="s2">mm&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;visibility&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span>
+                        <span class="s2">&quot;selectedColor&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span>
+                        <span class="s2">&quot;activeColor&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                        <span class="s2">&quot;propertiesLabelVisibility&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="s2">&quot;pointLabelsVisibility&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="s2">&quot;textScale&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+                        <span class="s2">&quot;glyphType&quot;</span><span class="p">:</span> <span class="s2">&quot;Sphere3D&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;glyphScale&quot;</span><span class="p">:</span> <span class="mf">5.800000000000001</span><span class="p">,</span>
+                        <span class="s2">&quot;glyphSize&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+                        <span class="s2">&quot;useGlyphScale&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s2">&quot;sliceProjection&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="s2">&quot;sliceProjectionUseFiducialColor&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s2">&quot;sliceProjectionOutlinedBehindSlicePlane&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="s2">&quot;sliceProjectionColor&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+                        <span class="s2">&quot;sliceProjectionOpacity&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
+                        <span class="s2">&quot;lineThickness&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+                        <span class="s2">&quot;lineColorFadingStart&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="s2">&quot;lineColorFadingEnd&quot;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
+                        <span class="s2">&quot;lineColorFadingSaturation&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="s2">&quot;lineColorFadingHueOffset&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                        <span class="s2">&quot;handlesInteractive&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="s2">&quot;snapMode&quot;</span><span class="p">:</span> <span class="s2">&quot;toVisibleSurface&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+
+        <span class="n">markup</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">jsonable</span><span class="p">(</span><span class="n">markup</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">markup</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">anatomical_from_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span><span class="o">.</span><span class="n">inv</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">startpoint_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">endpoint_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">midpoint_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span><span class="o">.</span><span class="n">lerp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">trajectory_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_in_world</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">startpoint_in_world</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory_in_world</span><span class="o">.</span><span class="n">normalized</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LineAnnotation.get_direction"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.get_direction">[docs]</a>    <span class="k">def</span> <span class="nf">get_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_in_world</span></div>
+
+<div class="viewcode-block" id="LineAnnotation.get_mesh"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.get_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">get_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the mesh in anatomical coordinates.&quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">startpoint</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">mesh</span> <span class="o">+=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+        <span class="n">mesh</span> <span class="o">+=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mesh</span></div>
+
+<div class="viewcode-block" id="LineAnnotation.get_mesh_in_world"><a class="viewcode-back" href="../../../deepdrr.annotations.html#deepdrr.annotations.line_annotation.LineAnnotation.get_mesh_in_world">[docs]</a>    <span class="k">def</span> <span class="nf">get_mesh_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">use_cached</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pv</span><span class="o">.</span><span class="n">PolyData</span><span class="p">:</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">startpoint_in_world</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_in_world</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">mesh</span> <span class="o">+=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+        <span class="n">mesh</span> <span class="o">+=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mesh</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

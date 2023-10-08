@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepDRR &mdash; DeepDRR函数调用文档 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9d604193"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            DeepDRR函数调用文档
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">DeepDRR函数调用文档</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">DeepDRR</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deepdrr">
+<h1>DeepDRR<a class="headerlink" href="#deepdrr" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deepdrr.html">deepdrr package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.annotations.html">deepdrr.annotations package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.annotations.html#module-deepdrr.annotations.fiducials">deepdrr.annotations.fiducials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.annotations.html#module-deepdrr.annotations.line_annotation">deepdrr.annotations.line_annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.annotations.html#module-deepdrr.annotations">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.device.html">deepdrr.device package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.device.html#module-deepdrr.device.carm">deepdrr.device.carm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.device.html#module-deepdrr.device.device">deepdrr.device.device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.device.html#module-deepdrr.device.mobile_carm">deepdrr.device.mobile_carm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.device.html#module-deepdrr.device.simple_device">deepdrr.device.simple_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.device.html#module-deepdrr.device">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.geo.html">deepdrr.geo package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.core">deepdrr.geo.core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.exceptions">deepdrr.geo.exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#deepdrr-geo-functional">deepdrr.geo.functional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.hyperplane">deepdrr.geo.hyperplane</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.random">deepdrr.geo.random</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.ray">deepdrr.geo.ray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.segment">deepdrr.geo.segment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.typing">deepdrr.geo.typing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo.utils">deepdrr.geo.utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.geo.html#module-deepdrr.geo">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.instruments.html">deepdrr.instruments package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.instruments.html#module-deepdrr.instruments.base">deepdrr.instruments.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.instruments.html#module-deepdrr.instruments">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.html">deepdrr.projector package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html">deepdrr.projector.mcgpu_incoherent_scatter_data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html">deepdrr.projector.mcgpu_mean_free_path_data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html">deepdrr.projector.mcgpu_rita_params package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.analytic_generators">deepdrr.projector.analytic_generators module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.conv_to_mcgpu">deepdrr.projector.conv_to_mcgpu module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.cuda_scatter_structs">deepdrr.projector.cuda_scatter_structs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mass_attenuation">deepdrr.projector.mass_attenuation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.material_coefficients">deepdrr.projector.material_coefficients module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_compton_data">deepdrr.projector.mcgpu_compton_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_density">deepdrr.projector.mcgpu_density module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_mfp_data">deepdrr.projector.mcgpu_mfp_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_rita_samplers">deepdrr.projector.mcgpu_rita_samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.plane_surface">deepdrr.projector.plane_surface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.projector">deepdrr.projector.projector module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.rita">deepdrr.projector.rita module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.scatter">deepdrr.projector.scatter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.spectral_data">deepdrr.projector.spectral_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.utils.html">deepdrr.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils.data_utils">deepdrr.utils.data_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils.dicom_utils">deepdrr.utils.dicom_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils.heatmap_utils">deepdrr.utils.heatmap_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils.image_utils">deepdrr.utils.image_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils.mesh_utils">deepdrr.utils.mesh_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils.test_utils">deepdrr.utils.test_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.utils.html#module-deepdrr.utils">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.vol.html">deepdrr.vol package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.vol.html#module-deepdrr.vol.kwire">deepdrr.vol.kwire module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.vol.html#module-deepdrr.vol.volume">deepdrr.vol.volume module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.vol.html#module-deepdrr.vol">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.downsample_tool">deepdrr.downsample_tool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.downsample_tool.downsample_tool"><code class="docutils literal notranslate"><span class="pre">downsample_tool()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom">deepdrr.load_dicom module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom.conv_hu_to_density"><code class="docutils literal notranslate"><span class="pre">conv_hu_to_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom.conv_hu_to_materials"><code class="docutils literal notranslate"><span class="pre">conv_hu_to_materials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom.conv_hu_to_materials_thresholding"><code class="docutils literal notranslate"><span class="pre">conv_hu_to_materials_thresholding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom.load_dicom"><code class="docutils literal notranslate"><span class="pre">load_dicom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom.upsample"><code class="docutils literal notranslate"><span class="pre">upsample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom_tool">deepdrr.load_dicom_tool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.conv_hu_to_density"><code class="docutils literal notranslate"><span class="pre">conv_hu_to_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.conv_hu_to_materials"><code class="docutils literal notranslate"><span class="pre">conv_hu_to_materials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.conv_hu_to_materials_thresholding"><code class="docutils literal notranslate"><span class="pre">conv_hu_to_materials_thresholding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.load_dicom_CT"><code class="docutils literal notranslate"><span class="pre">load_dicom_CT()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.load_dicom_metal"><code class="docutils literal notranslate"><span class="pre">load_dicom_metal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.replace_material"><code class="docutils literal notranslate"><span class="pre">replace_material()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.load_dicom_tool.upsample"><code class="docutils literal notranslate"><span class="pre">upsample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.logging">deepdrr.logging module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.logging.setup_log"><code class="docutils literal notranslate"><span class="pre">setup_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.network_segmentation">deepdrr.network_segmentation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.ContBatchNorm3d"><code class="docutils literal notranslate"><span class="pre">ContBatchNorm3d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.DownTransition"><code class="docutils literal notranslate"><span class="pre">DownTransition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.ELUCons"><code class="docutils literal notranslate"><span class="pre">ELUCons()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.InputTransition"><code class="docutils literal notranslate"><span class="pre">InputTransition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.LUConv"><code class="docutils literal notranslate"><span class="pre">LUConv</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.OutputTransition"><code class="docutils literal notranslate"><span class="pre">OutputTransition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.UpTransition"><code class="docutils literal notranslate"><span class="pre">UpTransition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.VNet"><code class="docutils literal notranslate"><span class="pre">VNet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.network_segmentation.passthrough"><code class="docutils literal notranslate"><span class="pre">passthrough()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.segmentation">deepdrr.segmentation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.segmentation.SegmentationNet"><code class="docutils literal notranslate"><span class="pre">SegmentationNet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.vis">deepdrr.vis module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.vis.get_frustum_mesh"><code class="docutils literal notranslate"><span class="pre">get_frustum_mesh()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.vis.show"><code class="docutils literal notranslate"><span class="pre">show()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.CArm"><code class="docutils literal notranslate"><span class="pre">CArm</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.MobileCArm"><code class="docutils literal notranslate"><span class="pre">MobileCArm</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.Projector"><code class="docutils literal notranslate"><span class="pre">Projector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.Volume"><code class="docutils literal notranslate"><span class="pre">Volume</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.html#deepdrr.setup_log"><code class="docutils literal notranslate"><span class="pre">setup_log()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="README.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 自用.</p>
+  </div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

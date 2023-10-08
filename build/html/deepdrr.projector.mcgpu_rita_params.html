@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.projector.mcgpu_rita_params package &mdash; DeepDRR函数调用文档 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9d604193"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="deepdrr.utils package" href="deepdrr.utils.html" />
+    <link rel="prev" title="deepdrr.projector.mcgpu_mean_free_path_data package" href="deepdrr.projector.mcgpu_mean_free_path_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DeepDRR函数调用文档
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="deepdrr.html">deepdrr package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.annotations.html">deepdrr.annotations package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.device.html">deepdrr.device package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.geo.html">deepdrr.geo package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.instruments.html">deepdrr.instruments package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="deepdrr.projector.html">deepdrr.projector package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html">deepdrr.projector.mcgpu_incoherent_scatter_data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html">deepdrr.projector.mcgpu_mean_free_path_data package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">deepdrr.projector.mcgpu_rita_params package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.PMMA_rita_params">deepdrr.projector.mcgpu_rita_params.PMMA_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.adipose_rita_params">deepdrr.projector.mcgpu_rita_params.adipose_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.air_rita_params">deepdrr.projector.mcgpu_rita_params.air_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.blood_rita_params">deepdrr.projector.mcgpu_rita_params.blood_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.bone_rita_params">deepdrr.projector.mcgpu_rita_params.bone_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.brain_rita_params">deepdrr.projector.mcgpu_rita_params.brain_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.breast_rita_params">deepdrr.projector.mcgpu_rita_params.breast_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.cartilage_rita_params">deepdrr.projector.mcgpu_rita_params.cartilage_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.connective_rita_params">deepdrr.projector.mcgpu_rita_params.connective_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.glands_others_rita_params">deepdrr.projector.mcgpu_rita_params.glands_others_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.liver_rita_params">deepdrr.projector.mcgpu_rita_params.liver_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.lung_rita_params">deepdrr.projector.mcgpu_rita_params.lung_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.muscle_rita_params">deepdrr.projector.mcgpu_rita_params.muscle_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params">deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.skin_rita_params">deepdrr.projector.mcgpu_rita_params.skin_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params">deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params">deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.titanium_rita_params">deepdrr.projector.mcgpu_rita_params.titanium_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params.water_rita_params">deepdrr.projector.mcgpu_rita_params.water_rita_params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_params">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.analytic_generators">deepdrr.projector.analytic_generators module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.conv_to_mcgpu">deepdrr.projector.conv_to_mcgpu module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.cuda_scatter_structs">deepdrr.projector.cuda_scatter_structs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mass_attenuation">deepdrr.projector.mass_attenuation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.material_coefficients">deepdrr.projector.material_coefficients module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_compton_data">deepdrr.projector.mcgpu_compton_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_density">deepdrr.projector.mcgpu_density module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_mfp_data">deepdrr.projector.mcgpu_mfp_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.mcgpu_rita_samplers">deepdrr.projector.mcgpu_rita_samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.plane_surface">deepdrr.projector.plane_surface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.projector">deepdrr.projector.projector module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.rita">deepdrr.projector.rita module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.scatter">deepdrr.projector.scatter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector.spectral_data">deepdrr.projector.spectral_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.html#module-deepdrr.projector">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.utils.html">deepdrr.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.vol.html">deepdrr.vol package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.downsample_tool">deepdrr.downsample_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom">deepdrr.load_dicom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom_tool">deepdrr.load_dicom_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.logging">deepdrr.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.network_segmentation">deepdrr.network_segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.segmentation">deepdrr.segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.vis">deepdrr.vis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeepDRR函数调用文档</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="deepdrr.html">deepdrr package</a></li>
+          <li class="breadcrumb-item"><a href="deepdrr.projector.html">deepdrr.projector package</a></li>
+      <li class="breadcrumb-item active">deepdrr.projector.mcgpu_rita_params package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/deepdrr.projector.mcgpu_rita_params.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deepdrr-projector-mcgpu-rita-params-package">
+<h1>deepdrr.projector.mcgpu_rita_params package<a class="headerlink" href="#deepdrr-projector-mcgpu-rita-params-package" title="Permalink to this heading"></a></h1>
+<section id="module-deepdrr.projector.mcgpu_rita_params.PMMA_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-pmma-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.PMMA_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.PMMA_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.adipose_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-adipose-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.adipose_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.adipose_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.air_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-air-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.air_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.air_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.blood_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-blood-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.blood_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.blood_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.bone_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-bone-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.bone_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.bone_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.brain_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-brain-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.brain_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.brain_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.breast_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-breast-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.breast_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.breast_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.cartilage_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-cartilage-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.cartilage_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.cartilage_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.connective_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-connective-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.connective_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.connective_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.glands_others_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-glands-others-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.glands_others_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.glands_others_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.liver_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-liver-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.liver_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.liver_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.lung_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-lung-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.lung_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.lung_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.muscle_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-muscle-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.muscle_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.muscle_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-red-marrow-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.skin_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-skin-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.skin_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.skin_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-soft-tissue-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-stomach-intestines-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.titanium_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-titanium-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.titanium_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.titanium_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params.water_rita_params">
+<span id="deepdrr-projector-mcgpu-rita-params-water-rita-params-module"></span><h2>deepdrr.projector.mcgpu_rita_params.water_rita_params module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params.water_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_params">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_params" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deepdrr.projector.mcgpu_mean_free_path_data.html" class="btn btn-neutral float-left" title="deepdrr.projector.mcgpu_mean_free_path_data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deepdrr.utils.html" class="btn btn-neutral float-right" title="deepdrr.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 自用.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

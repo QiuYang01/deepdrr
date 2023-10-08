@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.utils package &mdash; DeepDRR函数调用文档 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9d604193"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="deepdrr.vol package" href="deepdrr.vol.html" />
+    <link rel="prev" title="deepdrr.projector.mcgpu_rita_params package" href="deepdrr.projector.mcgpu_rita_params.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DeepDRR函数调用文档
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="deepdrr.html">deepdrr package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.annotations.html">deepdrr.annotations package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.device.html">deepdrr.device package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.geo.html">deepdrr.geo package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.instruments.html">deepdrr.instruments package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.html">deepdrr.projector package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">deepdrr.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils.data_utils">deepdrr.utils.data_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.deepdrr_data_dir"><code class="docutils literal notranslate"><span class="pre">deepdrr_data_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.download"><code class="docutils literal notranslate"><span class="pre">download()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.jsonable"><code class="docutils literal notranslate"><span class="pre">jsonable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.load_fcsv"><code class="docutils literal notranslate"><span class="pre">load_fcsv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.load_json"><code class="docutils literal notranslate"><span class="pre">load_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.save_fcsv"><code class="docutils literal notranslate"><span class="pre">save_fcsv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.data_utils.save_json"><code class="docutils literal notranslate"><span class="pre">save_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils.dicom_utils">deepdrr.utils.dicom_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.dicom_utils.find_dicom"><code class="docutils literal notranslate"><span class="pre">find_dicom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.dicom_utils.get_time"><code class="docutils literal notranslate"><span class="pre">get_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.dicom_utils.read_image"><code class="docutils literal notranslate"><span class="pre">read_image()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils.heatmap_utils">deepdrr.utils.heatmap_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.heatmap_utils.get_threshold"><code class="docutils literal notranslate"><span class="pre">get_threshold()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils.image_utils">deepdrr.utils.image_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.as_float32"><code class="docutils literal notranslate"><span class="pre">as_float32()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.as_uint8"><code class="docutils literal notranslate"><span class="pre">as_uint8()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.blend_heatmaps"><code class="docutils literal notranslate"><span class="pre">blend_heatmaps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.draw_circles"><code class="docutils literal notranslate"><span class="pre">draw_circles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.draw_line"><code class="docutils literal notranslate"><span class="pre">draw_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.draw_masks"><code class="docutils literal notranslate"><span class="pre">draw_masks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.draw_segment"><code class="docutils literal notranslate"><span class="pre">draw_segment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.ensure_cdim"><code class="docutils literal notranslate"><span class="pre">ensure_cdim()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.image_saver"><code class="docutils literal notranslate"><span class="pre">image_saver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.image_utils.save"><code class="docutils literal notranslate"><span class="pre">save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils.mesh_utils">deepdrr.utils.mesh_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.mesh_utils.isosurface"><code class="docutils literal notranslate"><span class="pre">isosurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.mesh_utils.voxelize"><code class="docutils literal notranslate"><span class="pre">voxelize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.mesh_utils.voxelize_dir"><code class="docutils literal notranslate"><span class="pre">voxelize_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.mesh_utils.voxelize_file"><code class="docutils literal notranslate"><span class="pre">voxelize_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils.test_utils">deepdrr.utils.test_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.test_utils.download_sampledata"><code class="docutils literal notranslate"><span class="pre">download_sampledata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.test_utils.get_output_dir"><code class="docutils literal notranslate"><span class="pre">get_output_dir()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.utils">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.generate_uniform_angles"><code class="docutils literal notranslate"><span class="pre">generate_uniform_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.jsonable"><code class="docutils literal notranslate"><span class="pre">jsonable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.listify"><code class="docutils literal notranslate"><span class="pre">listify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.mappable"><code class="docutils literal notranslate"><span class="pre">mappable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.neglog"><code class="docutils literal notranslate"><span class="pre">neglog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.one_hot"><code class="docutils literal notranslate"><span class="pre">one_hot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.param_saver"><code class="docutils literal notranslate"><span class="pre">param_saver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.radians"><code class="docutils literal notranslate"><span class="pre">radians()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.try_import_pyvista"><code class="docutils literal notranslate"><span class="pre">try_import_pyvista()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.try_import_vtk"><code class="docutils literal notranslate"><span class="pre">try_import_vtk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.utils.tuplify"><code class="docutils literal notranslate"><span class="pre">tuplify()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.vol.html">deepdrr.vol package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.downsample_tool">deepdrr.downsample_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom">deepdrr.load_dicom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom_tool">deepdrr.load_dicom_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.logging">deepdrr.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.network_segmentation">deepdrr.network_segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.segmentation">deepdrr.segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.vis">deepdrr.vis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeepDRR函数调用文档</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="deepdrr.html">deepdrr package</a></li>
+      <li class="breadcrumb-item active">deepdrr.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/deepdrr.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deepdrr-utils-package">
+<h1>deepdrr.utils package<a class="headerlink" href="#deepdrr-utils-package" title="Permalink to this heading"></a></h1>
+<section id="module-deepdrr.utils.data_utils">
+<span id="deepdrr-utils-data-utils-module"></span><h2>deepdrr.utils.data_utils module<a class="headerlink" href="#module-deepdrr.utils.data_utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.deepdrr_data_dir">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">deepdrr_data_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#deepdrr_data_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.deepdrr_data_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Get the data directory for DeepDRR.</p>
+<p>The data directory is determined by the environment variable <cite>DEEPDRR_DATA_DIR</cite> if it exists.
+Otherwise, it is <cite>~/datasets/DeepDRR</cite>. If the directory does not exist, it is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The data directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.download">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">md5</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extract_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.download" title="Permalink to this definition"></a></dt>
+<dd><p>Download a data file and place it in root.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – The download link.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – The name the save the file under. If None, uses the name from the URL. Defaults to None.</p></li>
+<li><p><strong>root</strong> (<em>str</em><em>, </em><em>optional</em>) – The directory to place downloaded data in. Can be overriden by setting the environment variable DEEPDRR_DATA_DIR. Defaults to “~/datasets/DeepDRR_Data”.</p></li>
+<li><p><strong>md5</strong> (<em>str</em><em>, </em><em>optional</em>) – MD5 checksum of the download. Defaults to None.</p></li>
+<li><p><strong>extract_name</strong> – If not None, extract the downloaded file to <cite>root / extract_name</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path of the downloaded file, or the extracted directory.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.jsonable">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">jsonable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#jsonable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.jsonable" title="Permalink to this definition"></a></dt>
+<dd><p>Convert obj to a JSON-ready container or object.
+:param obj:
+:type obj: [type]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.load_fcsv">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">load_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#load_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.load_fcsv" title="Permalink to this definition"></a></dt>
+<dd><p>Load a fcsv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path to the fcsv file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The points. Shape: (N, 3)
+np.ndarray: The names of the points. Shape: (N,)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.load_json">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">load_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#load_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.load_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.save_fcsv">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">save_fcsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'LPS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#save_fcsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.save_fcsv" title="Permalink to this definition"></a></dt>
+<dd><p>Save a fcsv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The path to save the file to.</p></li>
+<li><p><strong>points</strong> (<em>np.ndarray</em>) – The points to save. Shape: (N, 3)</p></li>
+<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The names of the points. Shape: (N,)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.data_utils.save_json">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#save_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.data_utils.save_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.utils.dicom_utils">
+<span id="deepdrr-utils-dicom-utils-module"></span><h2>deepdrr.utils.dicom_utils module<a class="headerlink" href="#module-deepdrr.utils.dicom_utils" title="Permalink to this heading"></a></h2>
+<p>Utils for dealing with DICOM images.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.dicom_utils.find_dicom">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.dicom_utils.</span></span><span class="sig-name descname"><span class="pre">find_dicom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_difference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/dicom_utils.html#find_dicom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.dicom_utils.find_dicom" title="Permalink to this definition"></a></dt>
+<dd><p>Get the image with the given acquisition time.</p>
+<p># TODO: parallelize this to work for multiple provided device times, for efficiency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_dir</strong> – Path to the directory containing the images. All subtrees are searched, so make sure it’s not large.</p></li>
+<li><p><strong>device_time</strong> (<em>str</em>) – Datetime object for the acquisition time.</p></li>
+<li><p><strong>max_difference</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum difference in seconds between the given timestamp and the closest image. Defaults to 2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path to the image.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.dicom_utils.get_time">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.dicom_utils.</span></span><span class="sig-name descname"><span class="pre">get_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/dicom_utils.html#get_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.dicom_utils.get_time" title="Permalink to this definition"></a></dt>
+<dd><p>Parse a dicom path to get the acquisition time.</p>
+<p>Does not actually open the image.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.dicom_utils.read_image">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.dicom_utils.</span></span><span class="sig-name descname"><span class="pre">read_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/dicom_utils.html#read_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.dicom_utils.read_image" title="Permalink to this definition"></a></dt>
+<dd><p>Load a DICOM image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Path to the DICOM file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The image as a float32 numpy array, in range [0, 1].</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.utils.heatmap_utils">
+<span id="deepdrr-utils-heatmap-utils-module"></span><h2>deepdrr.utils.heatmap_utils module<a class="headerlink" href="#module-deepdrr.utils.heatmap_utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.heatmap_utils.get_threshold">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.heatmap_utils.</span></span><span class="sig-name descname"><span class="pre">get_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/heatmap_utils.html#get_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.heatmap_utils.get_threshold" title="Permalink to this definition"></a></dt>
+<dd><p>Get the threshold for a heatmap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h</strong> (<em>np.ndarray</em>) – A 2D array</p></li>
+<li><p><strong>fraction</strong> (<em>float</em>) – Fraction of the heatmap range to set the threshold at. Higher values keeps fewer pixels.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.utils.image_utils">
+<span id="deepdrr-utils-image-utils-module"></span><h2>deepdrr.utils.image_utils module<a class="headerlink" href="#module-deepdrr.utils.image_utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.as_float32">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">as_float32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#as_float32"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.as_float32" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the image to float32.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>np.ndarray</em>) – the image to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the converted image.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.as_uint8">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">as_uint8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#as_uint8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.as_uint8" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the image to uint8.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>np.ndarray</em>) – the image to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the converted image.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.blend_heatmaps">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">blend_heatmaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heatmaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Spectral'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#blend_heatmaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.blend_heatmaps" title="Permalink to this definition"></a></dt>
+<dd><p>Visualize heatmaps on top of an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – (H, W, C) Image to visualize heatmaps on top of. If float, in range [0, 1], will be converted to uint8.</p></li>
+<li><p><strong>heatmaps</strong> (<em>np.ndarray</em>) – (H, W, num_heatmaps) Heatmaps to visualize. If float, in range [0, 1], will be converted to uint8.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Alpha value for the heatmaps. Defaults to 0.5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Image with heatmaps visualized, as a uint8 image.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.draw_circles">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">draw_circles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[255,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#draw_circles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.draw_circles" title="Permalink to this definition"></a></dt>
+<dd><p>Draw circles on an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – the image to draw on.</p></li>
+<li><p><strong>circles</strong> (<em>np.ndarray</em>) – the circles to draw. [N, 3] array of [x, y, r] coordinates.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.draw_line">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">draw_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.hyperplane.Line2D" title="deepdrr.geo.hyperplane.Line2D"><span class="pre">Line2D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(255,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#draw_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.draw_line" title="Permalink to this definition"></a></dt>
+<dd><p>Draw a line on an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – the image to draw on.</p></li>
+<li><p><strong>line</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Line2D" title="deepdrr.geo.Line2D"><em>geo.Line2D</em></a>) – the line to draw.</p></li>
+<li><p><strong>color</strong> (<em>tuple</em><em>, </em><em>optional</em>) – the color to draw the line in. Defaults to (255, 0, 0).</p></li>
+<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em>) – the thickness of the line. Defaults to 2.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.draw_masks">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">draw_masks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Spectral'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#draw_masks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.draw_masks" title="Permalink to this definition"></a></dt>
+<dd><p>Draw contours of masks on an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – the image to draw on.</p></li>
+<li><p><strong>masks</strong> (<em>np.ndarray</em>) – the masks to draw. [H, W, num_masks] array of masks.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.draw_segment">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">draw_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.segment.Segment2D" title="deepdrr.geo.segment.Segment2D"><span class="pre">Segment2D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[255,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#draw_segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.draw_segment" title="Permalink to this definition"></a></dt>
+<dd><p>Draw a segment on an image.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.ensure_cdim">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">ensure_cdim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#ensure_cdim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.ensure_cdim" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.image_saver">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">image_saver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#image_saver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.image_saver" title="Permalink to this definition"></a></dt>
+<dd><p>Save the images as tiff</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> (<em>np.ndarray</em>) – array of images</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – prefix for each file name</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – path to directory to save the files in</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>return code.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.image_utils.save">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.image_utils.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/image_utils.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.image_utils.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the given image using PIL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – the path to write the image to. Also determines the type.</p></li>
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – the image, in [C, H, W] or [H, W, C] order. (If the former, transposes).
+If in float32, assumed to be a float image. Converted to uint8 before saving.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.utils.mesh_utils">
+<span id="deepdrr-utils-mesh-utils-module"></span><h2>deepdrr.utils.mesh_utils module<a class="headerlink" href="#module-deepdrr.utils.mesh_utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.mesh_utils.isosurface">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.mesh_utils.</span></span><span class="sig-name descname"><span class="pre">isosurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_centered</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxation_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PolyData</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/mesh_utils.html#isosurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.mesh_utils.isosurface" title="Permalink to this definition"></a></dt>
+<dd><p>Create an isosurface model using marching cubes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – A 3-D array with scalar or integer data.</p></li>
+<li><p><strong>value</strong> (<em>float</em><em>, </em><em>optional</em>) – The value of the surface in <cite>data</cite>. Defaults to 0.5.</p></li>
+<li><p><strong>label</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Get the isosurface of the <cite>data == label</cite> segmentation. Defaults to None.</p></li>
+<li><p><strong>node_centered</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the values in the data are sampled in the node-centered style. Defaults to true.</p></li>
+<li><p><strong>smooth</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to apply smoothing. Defaults to True.</p></li>
+<li><p><strong>decimation</strong> (<em>float</em><em>, </em><em>optional</em>) – How much to decimate the surface. Defaults to 0.01.</p></li>
+<li><p><strong>smooth_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – number of smoothing iterations to run.</p></li>
+<li><p><strong>relaxation_factor</strong> (<em>float</em>) – passed to surface.smooth.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Pyvista mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pv.PolyData</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.mesh_utils.voxelize">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.mesh_utils.</span></span><span class="sig-name descname"><span class="pre">voxelize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PolyData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.FrameTransform" title="deepdrr.geo.core.FrameTransform"><span class="pre">FrameTransform</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/utils/mesh_utils.html#voxelize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.mesh_utils.voxelize" title="Permalink to this definition"></a></dt>
+<dd><p>Voxelize the surface mesh with the given density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surface</strong> (<em>pv.PolyData</em>) – The surface.</p></li>
+<li><p><strong>density</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em>) – Either a single float or a
+list of floats giving the size of a voxel in x, y, z.
+(This is really a spacing, but it’s misnamed in pyvista.)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The voxelized segmentation of the surface as np.uint8 and the associated world_from_ijk transform.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[np.ndarray, <a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.FrameTransform" title="deepdrr.geo.FrameTransform">geo.FrameTransform</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.mesh_utils.voxelize_dir">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.mesh_utils.</span></span><span class="sig-name descname"><span class="pre">voxelize_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cached</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils/mesh_utils.html#voxelize_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.mesh_utils.voxelize_dir" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.mesh_utils.voxelize_file">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.mesh_utils.</span></span><span class="sig-name descname"><span class="pre">voxelize_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils/mesh_utils.html#voxelize_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.mesh_utils.voxelize_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.utils.test_utils">
+<span id="deepdrr-utils-test-utils-module"></span><h2>deepdrr.utils.test_utils module<a class="headerlink" href="#module-deepdrr.utils.test_utils" title="Permalink to this heading"></a></h2>
+<p>Util functions for automated tests.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.test_utils.download_sampledata">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.test_utils.</span></span><span class="sig-name descname"><span class="pre">download_sampledata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CT-chest'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/test_utils.html#download_sampledata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.test_utils.download_sampledata" title="Permalink to this definition"></a></dt>
+<dd><p>Download the given sample data for testing.</p>
+<p>Options include:
+* <cite>“CT-chest”</cite>: a NRRD file containing a torso.
+* <cite>“CTPelvic1K”</cite>: a CT scan of the pelvis with a right superior pubic ramus fracture,</p>
+<blockquote>
+<div><p>selected from the <a class="reference external" href="https://github.com/ICT-MIRACLE-lab/CTPelvic1K">CTPelvik1K dataset</a>.
+This downloads the CT, pelvis segmentation, and KWire trajectory annotations and unzips them,
+returning the directory where they are located.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the volume, used as a key to the public domain downloadable data. Defaults to ‘CT-chest’.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path to the downloaded file or directory (if unzipped).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.test_utils.get_output_dir">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.test_utils.</span></span><span class="sig-name descname"><span class="pre">get_output_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="_modules/deepdrr/utils/test_utils.html#get_output_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.test_utils.get_output_dir" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deepdrr.utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.generate_uniform_angles">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">generate_uniform_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/utils.html#generate_uniform_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.generate_uniform_angles" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a uniform sampling of angles over the given ranges.</p>
+<p>If inputs are in degrees, so will the outputs be.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phi_range</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – range of angles phi in (min, max, step) form, in degrees.</p></li>
+<li><p><strong>theta_range</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – range of angles theta in (min, max, step) form, in degrees.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>phis, thetas over uniform angles, in radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.jsonable">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">jsonable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils/data_utils.html#jsonable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.jsonable" title="Permalink to this definition"></a></dt>
+<dd><p>Convert obj to a JSON-ready container or object.
+:param obj:
+:type obj: [type]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.listify">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">listify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/utils.html#listify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.listify" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.mappable">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">mappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils.html#mappable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.mappable" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator for funcs that take a n-D array x.</p>
+<p>Maps func across the last axis for arrays with ndim &gt; 1. Assumes that the array <cite>x</cite> is the last
+positional argument to the function, allowing for methods of a class or functions that take
+other parameters first, unless <cite>every</cite> is <cite>True</cite>. The function may also take keyword arguments,
+of course, and these are passed unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ndim</strong> – ndim(s) of argument(s) that the function expects. Either an int (same for each) or a
+list of ints, one for each argument. 0 indicates a scalar.</p></li>
+<li><p><strong>every</strong> (<em>bool</em>) – whether every argument is mappable (of base dimension n) or just the last argument.</p></li>
+<li><p><strong>method</strong> (<em>bool</em>) – whether the function is a method of a class instance.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.neglog">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">neglog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils.html#neglog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.neglog" title="Permalink to this definition"></a></dt>
+<dd><p>Take the negative log transform of an intensity image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.ndarray</em>) – a single 2D image, or N such images.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – positive offset from 0 before taking the logarithm.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the image or images after a negative log transform, scaled to [0, 1]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.one_hot">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">one_hot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/utils.html#one_hot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.one_hot" title="Permalink to this definition"></a></dt>
+<dd><p>One-hot encode the vector x along the axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – n-dim array x.</p></li>
+<li><p><strong>num_classes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – number of classes. Uses maximum label if not provided.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – the axis to insert the labels along.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>one-hot encoded labels with n + 1 axes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.param_saver">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">param_saver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thetas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj_mats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils.html#param_saver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.param_saver" title="Permalink to this definition"></a></dt>
+<dd><p>Save the paramaters.</p>
+<p>This function may be deprecated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thetas</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>phis</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>proj_mats</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>camera</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>origin</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>photons</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>spectrum</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>prefix</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>save_path</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.radians">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">radians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/deepdrr/utils.html#radians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.radians" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">radians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">radians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">radians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">S</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">S</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">radians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Convert to radians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> – the angle or array of angles.</p></li>
+<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the inputs are in degrees. If False, this is a no-op. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>each argument, converted to radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[float, List[float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.try_import_pyvista">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">try_import_pyvista</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils.html#try_import_pyvista"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.try_import_pyvista" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.try_import_vtk">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">try_import_vtk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/utils.html#try_import_vtk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.try_import_vtk" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.utils.tuplify">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.utils.</span></span><span class="sig-name descname"><span class="pre">tuplify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/utils.html#tuplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.utils.tuplify" title="Permalink to this definition"></a></dt>
+<dd><p>Create a tuple with <cite>n</cite> copies of <cite>t</cite>,  if <cite>t</cite> is not already a tuple of length <cite>n</cite>.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deepdrr.projector.mcgpu_rita_params.html" class="btn btn-neutral float-left" title="deepdrr.projector.mcgpu_rita_params package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deepdrr.vol.html" class="btn btn-neutral float-right" title="deepdrr.vol package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 自用.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

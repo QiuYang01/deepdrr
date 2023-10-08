@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.projector package &mdash; DeepDRR函数调用文档 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9d604193"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="deepdrr.projector.mcgpu_incoherent_scatter_data package" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html" />
+    <link rel="prev" title="deepdrr.instruments package" href="deepdrr.instruments.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DeepDRR函数调用文档
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="deepdrr.html">deepdrr package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.annotations.html">deepdrr.annotations package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.device.html">deepdrr.device package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.geo.html">deepdrr.geo package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.instruments.html">deepdrr.instruments package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">deepdrr.projector package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html">deepdrr.projector.mcgpu_incoherent_scatter_data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html">deepdrr.projector.mcgpu_mean_free_path_data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html">deepdrr.projector.mcgpu_rita_params package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.analytic_generators">deepdrr.projector.analytic_generators module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.analytic_generators.add_noise"><code class="docutils literal notranslate"><span class="pre">add_noise()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.conv_to_mcgpu">deepdrr.projector.conv_to_mcgpu module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.conv_to_mcgpu.get_mat_filename"><code class="docutils literal notranslate"><span class="pre">get_mat_filename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.conv_to_mcgpu.make_mcgpu_inputs"><code class="docutils literal notranslate"><span class="pre">make_mcgpu_inputs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.cuda_scatter_structs">deepdrr.projector.cuda_scatter_structs module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.cuda_scatter_structs.CudaComptonStruct"><code class="docutils literal notranslate"><span class="pre">CudaComptonStruct</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.cuda_scatter_structs.CudaMatMfpStruct"><code class="docutils literal notranslate"><span class="pre">CudaMatMfpStruct</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.cuda_scatter_structs.CudaPlaneSurfaceStruct"><code class="docutils literal notranslate"><span class="pre">CudaPlaneSurfaceStruct</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.cuda_scatter_structs.CudaRayleighStruct"><code class="docutils literal notranslate"><span class="pre">CudaRayleighStruct</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.cuda_scatter_structs.CudaWoodcockStruct"><code class="docutils literal notranslate"><span class="pre">CudaWoodcockStruct</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.mass_attenuation">deepdrr.projector.mass_attenuation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mass_attenuation.calculate_attenuation_gpu"><code class="docutils literal notranslate"><span class="pre">calculate_attenuation_gpu()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mass_attenuation.calculate_intensity_from_spectrum"><code class="docutils literal notranslate"><span class="pre">calculate_intensity_from_spectrum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mass_attenuation.get_absorption_coefs"><code class="docutils literal notranslate"><span class="pre">get_absorption_coefs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mass_attenuation.log_interp"><code class="docutils literal notranslate"><span class="pre">log_interp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.material_coefficients">deepdrr.projector.material_coefficients module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_compton_data">deepdrr.projector.mcgpu_compton_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mcgpu_compton_data.sanity_check_compton_data"><code class="docutils literal notranslate"><span class="pre">sanity_check_compton_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_density">deepdrr.projector.mcgpu_density module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_mfp_data">deepdrr.projector.mcgpu_mfp_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mcgpu_mfp_data.sanity_check_mfps"><code class="docutils literal notranslate"><span class="pre">sanity_check_mfps()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.mcgpu_rita_samplers">deepdrr.projector.mcgpu_rita_samplers module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.mcgpu_rita_samplers.sanity_check_saved_rita_params"><code class="docutils literal notranslate"><span class="pre">sanity_check_saved_rita_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.plane_surface">deepdrr.projector.plane_surface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.plane_surface.PlaneSurface"><code class="docutils literal notranslate"><span class="pre">PlaneSurface</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.projector">deepdrr.projector.projector module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.projector.Projector"><code class="docutils literal notranslate"><span class="pre">Projector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.projector.import_pycuda"><code class="docutils literal notranslate"><span class="pre">import_pycuda()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.rita">deepdrr.projector.rita module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.rita.RITA"><code class="docutils literal notranslate"><span class="pre">RITA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.rita.numerically_integrate"><code class="docutils literal notranslate"><span class="pre">numerically_integrate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.scatter">deepdrr.projector.scatter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.get_detector_plane"><code class="docutils literal notranslate"><span class="pre">get_detector_plane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.get_mfp_data"><code class="docutils literal notranslate"><span class="pre">get_mfp_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.get_scattered_dir"><code class="docutils literal notranslate"><span class="pre">get_scattered_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.get_woodcock_mfp"><code class="docutils literal notranslate"><span class="pre">get_woodcock_mfp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.make_woodcock_mfp"><code class="docutils literal notranslate"><span class="pre">make_woodcock_mfp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.move_photon_to_volume"><code class="docutils literal notranslate"><span class="pre">move_photon_to_volume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.sample_Compton_theta_E_prime"><code class="docutils literal notranslate"><span class="pre">sample_Compton_theta_E_prime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.sample_Rayleigh_theta"><code class="docutils literal notranslate"><span class="pre">sample_Rayleigh_theta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.sample_U01"><code class="docutils literal notranslate"><span class="pre">sample_U01()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.sample_initial_direction"><code class="docutils literal notranslate"><span class="pre">sample_initial_direction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.sample_initial_energy"><code class="docutils literal notranslate"><span class="pre">sample_initial_energy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.simulate_scatter_no_vr"><code class="docutils literal notranslate"><span class="pre">simulate_scatter_no_vr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.scatter.track_single_photon_no_vr"><code class="docutils literal notranslate"><span class="pre">track_single_photon_no_vr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector.spectral_data">deepdrr.projector.spectral_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deepdrr.projector">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deepdrr.projector.Projector"><code class="docutils literal notranslate"><span class="pre">Projector</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.utils.html">deepdrr.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.vol.html">deepdrr.vol package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.downsample_tool">deepdrr.downsample_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom">deepdrr.load_dicom module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.load_dicom_tool">deepdrr.load_dicom_tool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.logging">deepdrr.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.network_segmentation">deepdrr.network_segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.segmentation">deepdrr.segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr.vis">deepdrr.vis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.html#module-deepdrr">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DeepDRR函数调用文档</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="deepdrr.html">deepdrr package</a></li>
+      <li class="breadcrumb-item active">deepdrr.projector package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/deepdrr.projector.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deepdrr-projector-package">
+<h1>deepdrr.projector package<a class="headerlink" href="#deepdrr-projector-package" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html">deepdrr.projector.mcgpu_incoherent_scatter_data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.PMMA_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.PMMA_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.adipose_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.adipose_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.air_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.air_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.blood_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.blood_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.bone_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.bone_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.brain_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.brain_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.breast_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.breast_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.cartilage_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.cartilage_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.connective_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.connective_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.glands_others_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.glands_others_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.liver_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.liver_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.lung_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.lung_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.muscle_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.muscle_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.red_marrow_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.red_marrow_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.skin_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.skin_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.soft_tissue_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.soft_tissue_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.stomach_intestines_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.stomach_intestines_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.titanium_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.titanium_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data.water_compton_data">deepdrr.projector.mcgpu_incoherent_scatter_data.water_compton_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_incoherent_scatter_data.html#module-deepdrr.projector.mcgpu_incoherent_scatter_data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html">deepdrr.projector.mcgpu_mean_free_path_data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.PMMA_mfp">deepdrr.projector.mcgpu_mean_free_path_data.PMMA_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.adipose_mfp">deepdrr.projector.mcgpu_mean_free_path_data.adipose_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.air_mfp">deepdrr.projector.mcgpu_mean_free_path_data.air_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.blood_mfp">deepdrr.projector.mcgpu_mean_free_path_data.blood_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.bone_mfp">deepdrr.projector.mcgpu_mean_free_path_data.bone_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.brain_mfp">deepdrr.projector.mcgpu_mean_free_path_data.brain_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.breast_mfp">deepdrr.projector.mcgpu_mean_free_path_data.breast_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.cartilage_mfp">deepdrr.projector.mcgpu_mean_free_path_data.cartilage_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.connective_mfp">deepdrr.projector.mcgpu_mean_free_path_data.connective_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.glands_others_mfp">deepdrr.projector.mcgpu_mean_free_path_data.glands_others_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.liver_mfp">deepdrr.projector.mcgpu_mean_free_path_data.liver_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.lung_mfp">deepdrr.projector.mcgpu_mean_free_path_data.lung_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.muscle_mfp">deepdrr.projector.mcgpu_mean_free_path_data.muscle_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.red_marrow_mfp">deepdrr.projector.mcgpu_mean_free_path_data.red_marrow_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.skin_mfp">deepdrr.projector.mcgpu_mean_free_path_data.skin_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.soft_tissue_mfp">deepdrr.projector.mcgpu_mean_free_path_data.soft_tissue_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.stomach_intestines_mfp">deepdrr.projector.mcgpu_mean_free_path_data.stomach_intestines_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.titanium_mfp">deepdrr.projector.mcgpu_mean_free_path_data.titanium_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data.water_mfp">deepdrr.projector.mcgpu_mean_free_path_data.water_mfp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_mean_free_path_data.html#module-deepdrr.projector.mcgpu_mean_free_path_data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html">deepdrr.projector.mcgpu_rita_params package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.PMMA_rita_params">deepdrr.projector.mcgpu_rita_params.PMMA_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.adipose_rita_params">deepdrr.projector.mcgpu_rita_params.adipose_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.air_rita_params">deepdrr.projector.mcgpu_rita_params.air_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.blood_rita_params">deepdrr.projector.mcgpu_rita_params.blood_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.bone_rita_params">deepdrr.projector.mcgpu_rita_params.bone_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.brain_rita_params">deepdrr.projector.mcgpu_rita_params.brain_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.breast_rita_params">deepdrr.projector.mcgpu_rita_params.breast_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.cartilage_rita_params">deepdrr.projector.mcgpu_rita_params.cartilage_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.connective_rita_params">deepdrr.projector.mcgpu_rita_params.connective_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.glands_others_rita_params">deepdrr.projector.mcgpu_rita_params.glands_others_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.liver_rita_params">deepdrr.projector.mcgpu_rita_params.liver_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.lung_rita_params">deepdrr.projector.mcgpu_rita_params.lung_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.muscle_rita_params">deepdrr.projector.mcgpu_rita_params.muscle_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params">deepdrr.projector.mcgpu_rita_params.red_marrow_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.skin_rita_params">deepdrr.projector.mcgpu_rita_params.skin_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params">deepdrr.projector.mcgpu_rita_params.soft_tissue_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params">deepdrr.projector.mcgpu_rita_params.stomach_intestines_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.titanium_rita_params">deepdrr.projector.mcgpu_rita_params.titanium_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params.water_rita_params">deepdrr.projector.mcgpu_rita_params.water_rita_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deepdrr.projector.mcgpu_rita_params.html#module-deepdrr.projector.mcgpu_rita_params">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.analytic_generators">
+<span id="deepdrr-projector-analytic-generators-module"></span><h2>deepdrr.projector.analytic_generators module<a class="headerlink" href="#module-deepdrr.projector.analytic_generators" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.analytic_generators.add_noise">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.analytic_generators.</span></span><span class="sig-name descname"><span class="pre">add_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photon_prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photon_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/analytic_generators.html#add_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.analytic_generators.add_noise" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.conv_to_mcgpu">
+<span id="deepdrr-projector-conv-to-mcgpu-module"></span><h2>deepdrr.projector.conv_to_mcgpu module<a class="headerlink" href="#module-deepdrr.projector.conv_to_mcgpu" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.conv_to_mcgpu.get_mat_filename">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.conv_to_mcgpu.</span></span><span class="sig-name descname"><span class="pre">get_mat_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deepDRR_mat_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/conv_to_mcgpu.html#get_mat_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.conv_to_mcgpu.get_mat_filename" title="Permalink to this definition"></a></dt>
+<dd><p>Material names are those from the dictionary in material_coefficients.py file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.conv_to_mcgpu.make_mcgpu_inputs">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.conv_to_mcgpu.</span></span><span class="sig-name descname"><span class="pre">make_mcgpu_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads_per_block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histories_per_thread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_xyz_cm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_pixels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_size_cm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_to_detector_distance_cm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_to_isocenter_distance_cm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/conv_to_mcgpu.html#make_mcgpu_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.conv_to_mcgpu.make_mcgpu_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Creates multiple files to serve as the inputs</p>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.cuda_scatter_structs">
+<span id="deepdrr-projector-cuda-scatter-structs-module"></span><h2>deepdrr.projector.cuda_scatter_structs module<a class="headerlink" href="#module-deepdrr.projector.cuda_scatter_structs" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaComptonStruct">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.cuda_scatter_structs.</span></span><span class="sig-name descname"><span class="pre">CudaComptonStruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compton_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_gpu_ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/cuda_scatter_structs.html#CudaComptonStruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaComptonStruct" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaComptonStruct.MEMSIZE">
+<span class="sig-name descname"><span class="pre">MEMSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">364</span></em><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaComptonStruct.MEMSIZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaMatMfpStruct">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.cuda_scatter_structs.</span></span><span class="sig-name descname"><span class="pre">CudaMatMfpStruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mfp_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_gpu_ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/cuda_scatter_structs.html#CudaMatMfpStruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaMatMfpStruct" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaMatMfpStruct.MEMSIZE">
+<span class="sig-name descname"><span class="pre">MEMSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">400084</span></em><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaMatMfpStruct.MEMSIZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaPlaneSurfaceStruct">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.cuda_scatter_structs.</span></span><span class="sig-name descname"><span class="pre">CudaPlaneSurfaceStruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psurf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deepdrr.projector.plane_surface.PlaneSurface" title="deepdrr.projector.plane_surface.PlaneSurface"><span class="pre">PlaneSurface</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_gpu_ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/cuda_scatter_structs.html#CudaPlaneSurfaceStruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaPlaneSurfaceStruct" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaPlaneSurfaceStruct.MEMSIZE">
+<span class="sig-name descname"><span class="pre">MEMSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">80</span></em><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaPlaneSurfaceStruct.MEMSIZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaRayleighStruct">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.cuda_scatter_structs.</span></span><span class="sig-name descname"><span class="pre">CudaRayleighStruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rita_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deepdrr.projector.rita.RITA" title="deepdrr.projector.rita.RITA"><span class="pre">RITA</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_gpu_ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/cuda_scatter_structs.html#CudaRayleighStruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaRayleighStruct" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaRayleighStruct.MEMSIZE">
+<span class="sig-name descname"><span class="pre">MEMSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">104120</span></em><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaRayleighStruct.MEMSIZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaWoodcockStruct">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.cuda_scatter_structs.</span></span><span class="sig-name descname"><span class="pre">CudaWoodcockStruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mfp_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_gpu_ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/cuda_scatter_structs.html#CudaWoodcockStruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaWoodcockStruct" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.cuda_scatter_structs.CudaWoodcockStruct.MEMSIZE">
+<span class="sig-name descname"><span class="pre">MEMSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200044</span></em><a class="headerlink" href="#deepdrr.projector.cuda_scatter_structs.CudaWoodcockStruct.MEMSIZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.mass_attenuation">
+<span id="deepdrr-projector-mass-attenuation-module"></span><h2>deepdrr.projector.mass_attenuation module<a class="headerlink" href="#module-deepdrr.projector.mass_attenuation" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mass_attenuation.calculate_attenuation_gpu">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mass_attenuation.</span></span><span class="sig-name descname"><span class="pre">calculate_attenuation_gpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projections_gpu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mass_attenuation.html#calculate_attenuation_gpu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mass_attenuation.calculate_attenuation_gpu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mass_attenuation.calculate_intensity_from_spectrum">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mass_attenuation.</span></span><span class="sig-name descname"><span class="pre">calculate_intensity_from_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mass_attenuation.html#calculate_intensity_from_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mass_attenuation.calculate_intensity_from_spectrum" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mass_attenuation.get_absorption_coefs">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mass_attenuation.</span></span><span class="sig-name descname"><span class="pre">get_absorption_coefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy_keV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mass_attenuation.html#get_absorption_coefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mass_attenuation.get_absorption_coefs" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the absorption coefficient for the specified material at the specified energy level (in keV)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_keV</strong> – energy level of photon/ray (keV)</p></li>
+<li><p><strong>material</strong> (<em>str</em>) – the material</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the absorption coefficient (in [cm^2 / g]), interpolated from the data in material_coefficients.py</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mass_attenuation.log_interp">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mass_attenuation.</span></span><span class="sig-name descname"><span class="pre">log_interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xInterp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mass_attenuation.html#log_interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mass_attenuation.log_interp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.material_coefficients">
+<span id="deepdrr-projector-material-coefficients-module"></span><h2>deepdrr.projector.material_coefficients module<a class="headerlink" href="#module-deepdrr.projector.material_coefficients" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_compton_data">
+<span id="deepdrr-projector-mcgpu-compton-data-module"></span><h2>deepdrr.projector.mcgpu_compton_data module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_compton_data" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mcgpu_compton_data.sanity_check_compton_data">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mcgpu_compton_data.</span></span><span class="sig-name descname"><span class="pre">sanity_check_compton_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mcgpu_compton_data.html#sanity_check_compton_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mcgpu_compton_data.sanity_check_compton_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.mcgpu_density">
+<span id="deepdrr-projector-mcgpu-density-module"></span><h2>deepdrr.projector.mcgpu_density module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_density" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector.mcgpu_mfp_data">
+<span id="deepdrr-projector-mcgpu-mfp-data-module"></span><h2>deepdrr.projector.mcgpu_mfp_data module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_mfp_data" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mcgpu_mfp_data.sanity_check_mfps">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mcgpu_mfp_data.</span></span><span class="sig-name descname"><span class="pre">sanity_check_mfps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mcgpu_mfp_data.html#sanity_check_mfps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mcgpu_mfp_data.sanity_check_mfps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.mcgpu_rita_samplers">
+<span id="deepdrr-projector-mcgpu-rita-samplers-module"></span><h2>deepdrr.projector.mcgpu_rita_samplers module<a class="headerlink" href="#module-deepdrr.projector.mcgpu_rita_samplers" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.mcgpu_rita_samplers.sanity_check_saved_rita_params">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.mcgpu_rita_samplers.</span></span><span class="sig-name descname"><span class="pre">sanity_check_saved_rita_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/mcgpu_rita_samplers.html#sanity_check_saved_rita_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.mcgpu_rita_samplers.sanity_check_saved_rita_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.plane_surface">
+<span id="deepdrr-projector-plane-surface-module"></span><h2>deepdrr.projector.plane_surface module<a class="headerlink" href="#module-deepdrr.projector.plane_surface" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.plane_surface.</span></span><span class="sig-name descname"><span class="pre">PlaneSurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plane_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/plane_surface.html#PlaneSurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.basis_1">
+<span class="sig-name descname"><span class="pre">basis_1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.basis_1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.basis_2">
+<span class="sig-name descname"><span class="pre">basis_2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.basis_2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.bounds">
+<span class="sig-name descname"><span class="pre">bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.bounds" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.check_ray_intersection">
+<span class="sig-name descname"><span class="pre">check_ray_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float32</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/plane_surface.html#PlaneSurface.check_ray_intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.check_ray_intersection" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates whether or not a photon at the specified position, travelling in the specified direction, will hit the plane of the PlaneSurface object.</p>
+<p>It is imperative that all of the arguments are in the same coordinate system (unchecked).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the position of the photon</p></li>
+<li><p><strong>dir</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Vector3D" title="deepdrr.geo.Vector3D"><em>geo.Vector3D</em></a>) – the direction that the photon is travelling in</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>if there will be an intersection, the distance to the intersection.  If no intersection, returns a negative number (the negative number does not necessarily have a geometrical meaning)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.get_lin_comb_coefs">
+<span class="sig-name descname"><span class="pre">get_lin_comb_coefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/projector/plane_surface.html#PlaneSurface.get_lin_comb_coefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.get_lin_comb_coefs" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the ‘coordinates’ of the point in the plane, where the ‘origin’ in the plane is PlaneSurface.surface_origin,
+and where the coordinate axes correspond to the PlaneSurface basis vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the point to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the coefficients for the two basis vectors</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[np.float32, np.float32]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.orthogonal">
+<span class="sig-name descname"><span class="pre">orthogonal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.orthogonal" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.plane_vector">
+<span class="sig-name descname"><span class="pre">plane_vector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.plane_vector" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.point_on_surface">
+<span class="sig-name descname"><span class="pre">point_on_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/plane_surface.html#PlaneSurface.point_on_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.point_on_surface" title="Permalink to this definition"></a></dt>
+<dd><p>Returns whether the given point, which is assumed to be on the plane of the surface, is within the bounds of the surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the point to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the point is in-bounds, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.point_on_surface_checking">
+<span class="sig-name descname"><span class="pre">point_on_surface_checking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/plane_surface.html#PlaneSurface.point_on_surface_checking"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.point_on_surface_checking" title="Permalink to this definition"></a></dt>
+<dd><p>Returns whether the given point, which is not assumed to be on the plane of the surface, is within the bounds of the surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the point to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the point is on the plane and in-bounds, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.plane_surface.PlaneSurface.surface_origin">
+<span class="sig-name descname"><span class="pre">surface_origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#deepdrr.projector.plane_surface.PlaneSurface.surface_origin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.projector">
+<span id="deepdrr-projector-projector-module"></span><h2>deepdrr.projector.projector module<a class="headerlink" href="#module-deepdrr.projector.projector" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.projector.</span></span><span class="sig-name descname"><span class="pre">Projector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priorities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_intrinsics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraIntrinsicTransform" title="deepdrr.geo.core.CameraIntrinsicTransform"><span class="pre">CameraIntrinsicTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.device.html#deepdrr.device.device.Device" title="deepdrr.device.device.Device"><span class="pre">Device</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'90KV_AL40'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_scatter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photon_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_block_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collected_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neglog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity_upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuate_outside_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_to_detector_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.device.html#deepdrr.device.device.Device" title="deepdrr.device.device.Device"><span class="pre">Device</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.Projector" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.camera_intrinsics">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">camera_intrinsics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraIntrinsicTransform" title="deepdrr.geo.core.CameraIntrinsicTransform"><span class="pre">CameraIntrinsicTransform</span></a></em><a class="headerlink" href="#deepdrr.projector.projector.Projector.camera_intrinsics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.free">
+<span class="sig-name descname"><span class="pre">free</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.free"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.Projector.free" title="Permalink to this definition"></a></dt>
+<dd><p>Free the allocated GPU memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.Projector.initialize" title="Permalink to this definition"></a></dt>
+<dd><p>Allocate GPU memory and transfer the volume, segmentations to GPU.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.initialize_output_arrays">
+<span class="sig-name descname"><span class="pre">initialize_output_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.initialize_output_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.Projector.initialize_output_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Allocate arrays dependent on the output size. Frees previously allocated arrays.</p>
+<p>This may have to be called multiple times if the output size changes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.output_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#deepdrr.projector.projector.Projector.output_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.project">
+<span class="sig-name descname"><span class="pre">project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">camera_projections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraProjection" title="deepdrr.geo.core.CameraProjection"><span class="pre">CameraProjection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.Projector.project" title="Permalink to this definition"></a></dt>
+<dd><p>Perform the projection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>camera_projection</strong> – any number of camera projections. If none are provided, the Projector uses the CArm device to obtain a camera projection.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if no projections are provided and self.device is None.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array of DRRs, after mass attenuation, etc.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.project_over_carm_range">
+<span class="sig-name descname"><span class="pre">project_over_carm_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.project_over_carm_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.Projector.project_over_carm_range" title="Permalink to this definition"></a></dt>
+<dd><p>Project over a range of angles using the included CArm.</p>
+<p>Ignores the CArm’s internal pose, except for its isocenter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.source_to_detector_distance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_to_detector_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#deepdrr.projector.projector.Projector.source_to_detector_distance" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.volume">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><a class="headerlink" href="#deepdrr.projector.projector.Projector.volume" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.Projector.volumes">
+<span class="sig-name descname"><span class="pre">volumes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#deepdrr.projector.projector.Projector.volumes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.projector.import_pycuda">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.projector.</span></span><span class="sig-name descname"><span class="pre">import_pycuda</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#import_pycuda"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.projector.import_pycuda" title="Permalink to this definition"></a></dt>
+<dd><p>Import pycuda and return the context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The pycuda context.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pycuda.autoinit.context</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.rita">
+<span id="deepdrr-projector-rita-module"></span><h2>deepdrr.projector.rita module<a class="headerlink" href="#module-deepdrr.projector.rita" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.rita.RITA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.rita.</span></span><span class="sig-name descname"><span class="pre">RITA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/rita.html#RITA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.rita.RITA" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.rita.RITA.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#deepdrr.projector.rita.RITA.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">float64</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.rita.RITA.from_pdf">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdf_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_grid_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int32</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/rita.html#RITA.from_pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.rita.RITA.from_pdf" title="Permalink to this definition"></a></dt>
+<dd><p>Creates and returns a RITA object from the provided PDF over the provided interval, using the specified number of gridpoints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_min</strong> (<em>np.float64</em>) – the lower bound of the interval to sample from</p></li>
+<li><p><strong>x_max</strong> (<em>np.float64</em>) – the upper bound of the interval to sample from</p></li>
+<li><p><strong>pdf_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.float64</em><em>]</em><em>, </em><em>np.float64</em><em>]</em>) – the analytical PDF (float -&gt; float) of the function whose PDF we are sampling from</p></li>
+<li><p><strong>n_grid_points</strong> (<em>Optional</em><em>[</em><em>np.int32</em><em>]</em><em>, </em><em>optional</em>) – the number of grid points to finish with.  Must be at least 10.  Defaults to 128</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.rita.RITA.from_saved_params">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_saved_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/rita.html#RITA.from_saved_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.rita.RITA.from_saved_params" title="Permalink to this definition"></a></dt>
+<dd><p>Creates and returns a RITA object based on the saved RITA parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>np.ndarray</em>) – the saved parameters.  See mcgpu_rita_samplers.py:saved_rita_params dictionary for available options</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.rita.RITA.sample_rita">
+<span class="sig-name descname"><span class="pre">sample_rita</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float64</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/rita.html#RITA.sample_rita"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.rita.RITA.sample_rita" title="Permalink to this definition"></a></dt>
+<dd><p>Using the provided RITA parameters, return an x-value based on the RITA-approximated PDF</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_arr</strong> (<em>np.ndarray</em>) – the x_i’s (grid points) for RITA</p></li>
+<li><p><strong>y_arr</strong> (<em>np.ndarray</em>) – the y_i’s (Greek ‘xi’ values) for RITA</p></li>
+<li><p><strong>a_arr</strong> (<em>np.ndarray</em>) – the a_i’s for RITA</p></li>
+<li><p><strong>b_arr</strong> (<em>np.ndarray</em>) – the b_i’s for RITA</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a randomly sampled x-value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float64</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.rita.numerically_integrate">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.rita.</span></span><span class="sig-name descname"><span class="pre">numerically_integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/rita.html#numerically_integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.rita.numerically_integrate" title="Permalink to this definition"></a></dt>
+<dd><p>Numerically integrates function ‘func’ on the interval [x_min,x_max] using the 20-point Gauss method (see page 261 of ‘PENELOPE-2006’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.float64</em><em>]</em><em>, </em><em>np.float64</em><em>]</em>) – the function to integrate</p></li>
+<li><p><strong>x_min</strong> (<em>np.float64</em>) – the lower integration bound</p></li>
+<li><p><strong>x_max</strong> (<em>np.float64</em>) – the upper integration bound</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the result of numerically integrating ‘func’</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float64</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.scatter">
+<span id="deepdrr-projector-scatter-module"></span><h2>deepdrr.projector.scatter module<a class="headerlink" href="#module-deepdrr.projector.scatter" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.get_detector_plane">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">get_detector_plane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rt_kinv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_intrinsics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraIntrinsicTransform" title="deepdrr.geo.core.CameraIntrinsicTransform"><span class="pre">CameraIntrinsicTransform</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sdd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensor_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#deepdrr.projector.plane_surface.PlaneSurface" title="deepdrr.projector.plane_surface.PlaneSurface"><span class="pre">PlaneSurface</span></a></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#get_detector_plane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.get_detector_plane" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the PlaneSurface object of the detector plane in IJK coordinates.
+Note that the cosines of the plane’s normal vector (n_x, n_y, n_z) are NOT normalized to be a unit vector.</p>
+<p>The first basis vector represents moving one pixel ACROSS the image (left to right).
+The second basis vector represents moving one pixel DOWN the image (top to bottom).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rt_kinv</strong> (<em>np.ndarray</em>) – the 3x3 ray transform for the projection.  Transforms pixel indices (u,v,1) to world-space vector along
+the ray from the X-Ray source to the pixel [u,v] on the detector, such that the resulting world-space vector
+has unit projection along the vector pointing from the source to the center of the detector.</p></li>
+<li><p><strong>camera_intrinsics</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.CameraIntrinsicTransform" title="deepdrr.geo.CameraIntrinsicTransform"><em>geo.CameraIntrinsicTransform</em></a>) – the 3x3 matrix that denotes the camera’s intrinsics.  Canonically represented by K.</p></li>
+<li><p><strong>sdd</strong> (<em>float</em>) – the distance from the X-Ray source to the detector.</p></li>
+<li><p><strong>source_world</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the world coordinates of the X-Ray source</p></li>
+<li><p><strong>sensor_size</strong> (<em>Tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the sensor size {width}x{height}, in pixels, of the detector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a PlaneSurface object representing the detector.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#deepdrr.projector.plane_surface.PlaneSurface" title="deepdrr.projector.plane_surface.PlaneSurface">PlaneSurface</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.get_mfp_data">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">get_mfp_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float32</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float32</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float32</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#get_mfp_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.get_mfp_data" title="Permalink to this definition"></a></dt>
+<dd><p>Access the Mean Free Path data for the given material’s table at the given photon energy level.
+Performs linear interpolation for any energy value that isn’t exactly a table entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> (<em>np.ndarray</em>) – a table of Mean Free Path data.  See mcgpu_mean_free_path_data directory for examples.</p></li>
+<li><p><strong>E</strong> (<em>np.float32</em>) – the energy of the photon</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the Rayleigh scatter mean free path
+np.float32: the Compton scatter mean free path
+np.float32: the total mean free path</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.get_scattered_dir">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">get_scattered_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#get_scattered_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.get_scattered_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the new direction of travel after getting scattered</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Vector3D" title="deepdrr.geo.Vector3D"><em>geo.Vector3D</em></a>) – the incoming direction of travel</p></li>
+<li><p><strong>cos_theta</strong> (<em>np.float32</em>) – the cosine of the polar scattering angle, i.e. the angle dir and dir_prime</p></li>
+<li><p><strong>phi</strong> (<em>np.float32</em>) – the azimuthal angle, i.e. how dir_prime is rotated about the axis ‘dir’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the outgoing direction of travel</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Vector3D" title="deepdrr.geo.Vector3D">geo.Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.get_woodcock_mfp">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">get_woodcock_mfp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float32</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#get_woodcock_mfp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.get_woodcock_mfp" title="Permalink to this definition"></a></dt>
+<dd><p>Access the Woodcock Mean Free Path at the given photon energy level.
+For an explanation of what the Woodcock Mean Free Path is, see mcgpu_mfp_data.py.
+Performs linear interpolation for any energy value that isn’t exactly a table entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> (<em>np.ndarray</em>) – a table of Woodcock Mean Free Path data.  See make_woodcock_mfp(…).</p></li>
+<li><p><strong>E</strong> (<em>np.float32</em>) – the energy of the photon</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the inverse of the total majorant cross section.  This returned value has units of centimeters.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.make_woodcock_mfp">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">make_woodcock_mfp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">materials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#make_woodcock_mfp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.make_woodcock_mfp" title="Permalink to this definition"></a></dt>
+<dd><p>Generates and returns a table of [energy, Woodcock MFP] for each energy level, based on the provided materials</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>materials</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – list of material names to generate Woodock MFP data for.  For a list of available materials, reference mcgpu_mfp_data.py</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a table of [energy, Woodcock MFP] for each applicable energy level</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.move_photon_to_volume">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">move_photon_to_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_min_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_max_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#move_photon_to_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.move_photon_to_volume" title="Permalink to this definition"></a></dt>
+<dd><p>Transports a photon at the given position, travelling in the given direction, to a rectangular-prism volume of the given bounds.
+Assumes the volume’s surfaces are aligned with the major planes of the coordinate system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the initial position of the photon.  Very likely to be the X-ray source.</p></li>
+<li><p><strong>direction</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Vector3D" title="deepdrr.geo.Vector3D"><em>geo.Vector3D</em></a>) – a unit vector denoting the direction in which the photon is traveling</p></li>
+<li><p><strong>volume_min_bounds</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – the minimum coordinate bound for the volume in each direction</p></li>
+<li><p><strong>volume_max_bounds</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – the minimum coordinate bound for the volume in each direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>whether the photon hits the volume or not
+geo.Point3D: where the photon hits the volume if it hits the volume, else the original position</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.sample_Compton_theta_E_prime">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">sample_Compton_theta_E_prime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">photon_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat_nshells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat_compton_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float32</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#sample_Compton_theta_E_prime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.sample_Compton_theta_E_prime" title="Permalink to this definition"></a></dt>
+<dd><p>Randomly sample values of theta and W for a given Compton scatter interaction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>photon_energy</strong> (<em>np.float32</em>) – the energy of the incoming photon</p></li>
+<li><p><strong>mat_nshells</strong> (<em>np.int32</em>) – the number of electron shells in the material being interacted with</p></li>
+<li><p><strong>mat_compton_data</strong> (<em>np.ndarray</em>) – the Compton scatter data for the material being interacted with.  See mcgpu_compton_data.py for more details</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>cos_theta, the polar scattering angle
+np.float32: E_prime, the energy of the outgoing photon</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.sample_Rayleigh_theta">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">sample_Rayleigh_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">photon_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rayleigh_sampler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deepdrr.projector.rita.RITA" title="deepdrr.projector.rita.RITA"><span class="pre">RITA</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float32</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#sample_Rayleigh_theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.sample_Rayleigh_theta" title="Permalink to this definition"></a></dt>
+<dd><p>Randomly sample values of theta for a given Rayleigh scatter interaction
+Based on page 49 of paper ‘PENELOPE-2006: A Code System for Monte Carlo Simulation of Electron and Photon Transport’</p>
+<p>Note that the materials files distributed with MC-GPU_v1.3 (<a class="reference external" href="https://code.google.com/archive/p/mcgpu/downloads">https://code.google.com/archive/p/mcgpu/downloads</a>) uses
+Form Factor data from PENELOPE-2006 files.  Accordingly, the (unnormalized) PDF is factored as:</p>
+<blockquote>
+<div><p>p_{Ra}(cos theta) = g(cos theta)[F(x,Z)]^2</p>
+</div></blockquote>
+<dl class="simple">
+<dt>not</dt><dd><p>p_{Ra}(cos theta) = g(cos theta)[F(q,Z)]^2</p>
+</dd>
+</dl>
+<p>Accordingly, we compute cos(theta) using the x-values, not the q-values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>photon_energy</strong> (<em>np.float32</em>) – the energy of the incoming photon</p></li>
+<li><p><strong>rayleigh_sampler</strong> (<a class="reference internal" href="#deepdrr.projector.rita.RITA" title="deepdrr.projector.rita.RITA"><em>RITA</em></a>) – the RITA sampler object for the material at the location of the interaction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>cos(theta), where theta is the polar scattering angle</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.sample_U01">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">sample_U01</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float32</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#sample_U01"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.sample_U01" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a value uniformly sampled from the interval [0,1]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.sample_initial_direction">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">sample_initial_direction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#sample_initial_direction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.sample_initial_direction" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an initial direction vector for a photon, uniformly distributed over the unit sphere.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the initial direction unit vector (dx, dy, dz)^T</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Vector3D" title="deepdrr.geo.Vector3D">geo.Vector3D</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.sample_initial_energy">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">sample_initial_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float32</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#sample_initial_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.sample_initial_energy" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the energy (in eV) of a photon emitted by an X-Ray source with the given spectrum</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spectrum</strong> (<em>np.ndarray</em>) – the data associated with the spectrum.  Cross-reference spectral_data.py</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the energy of a photon, in eV</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.simulate_scatter_no_vr">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">simulate_scatter_no_vr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_ijk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rt_kinv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_intrinsics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraIntrinsicTransform" title="deepdrr.geo.core.CameraIntrinsicTransform"><span class="pre">CameraIntrinsicTransform</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_to_detector_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_from_ijk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensor_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photon_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mfp_woodcock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([[1.50000e+04,</span> <span class="pre">1.04178e+01],</span> <span class="pre">[1.55000e+04,</span> <span class="pre">2.39995e+01],</span> <span class="pre">[1.60000e+04,</span> <span class="pre">5.05336e+01],</span> <span class="pre">[1.65000e+04,</span> <span class="pre">9.64766e+01],</span> <span class="pre">[1.70000e+04,</span> <span class="pre">1.74507e+02],</span> <span class="pre">[1.75000e+04,</span> <span class="pre">2.91945e+02],</span> <span class="pre">[1.80000e+04,</span> <span class="pre">4.66386e+02],</span> <span class="pre">[1.85000e+04,</span> <span class="pre">7.11402e+02],</span> <span class="pre">[1.90000e+04,</span> <span class="pre">1.03605e+03],</span> <span class="pre">[1.95000e+04,</span> <span class="pre">1.46023e+03],</span> <span class="pre">[2.00000e+04,</span> <span class="pre">1.98617e+03],</span> <span class="pre">[2.05000e+04,</span> <span class="pre">2.61021e+03],</span> <span class="pre">[2.10000e+04,</span> <span class="pre">3.38544e+03],</span> <span class="pre">[2.15000e+04,</span> <span class="pre">4.24095e+03],</span> <span class="pre">[2.20000e+04,</span> <span class="pre">5.24354e+03],</span> <span class="pre">[2.25000e+04,</span> <span class="pre">6.32791e+03],</span> <span class="pre">[2.30000e+04,</span> <span class="pre">7.54120e+03],</span> <span class="pre">[2.35000e+04,</span> <span class="pre">8.77681e+03],</span> <span class="pre">[2.40000e+04,</span> <span class="pre">1.01946e+04],</span> <span class="pre">[2.45000e+04,</span> <span class="pre">1.15664e+04],</span> <span class="pre">[2.50000e+04,</span> <span class="pre">1.29585e+04],</span> <span class="pre">[2.55000e+04,</span> <span class="pre">1.44935e+04],</span> <span class="pre">[2.60000e+04,</span> <span class="pre">1.60105e+04],</span> <span class="pre">[2.65000e+04,</span> <span class="pre">1.74699e+04],</span> <span class="pre">[2.70000e+04,</span> <span class="pre">1.90277e+04],</span> <span class="pre">[2.75000e+04,</span> <span class="pre">2.04829e+04],</span> <span class="pre">[2.80000e+04,</span> <span class="pre">2.20221e+04],</span> <span class="pre">[2.85000e+04,</span> <span class="pre">2.33956e+04],</span> <span class="pre">[2.90000e+04,</span> <span class="pre">2.48280e+04],</span> <span class="pre">[2.95000e+04,</span> <span class="pre">2.60390e+04],</span> <span class="pre">[3.00000e+04,</span> <span class="pre">2.72837e+04],</span> <span class="pre">[3.05000e+04,</span> <span class="pre">2.85632e+04],</span> <span class="pre">[3.10000e+04,</span> <span class="pre">2.95578e+04],</span> <span class="pre">[3.15000e+04,</span> <span class="pre">3.06992e+04],</span> <span class="pre">[3.20000e+04,</span> <span class="pre">3.16468e+04],</span> <span class="pre">[3.25000e+04,</span> <span class="pre">3.25768e+04],</span> <span class="pre">[3.30000e+04,</span> <span class="pre">3.34075e+04],</span> <span class="pre">[3.35000e+04,</span> <span class="pre">3.41587e+04],</span> <span class="pre">[3.40000e+04,</span> <span class="pre">3.48395e+04],</span> <span class="pre">[3.45000e+04,</span> <span class="pre">3.54891e+04],</span> <span class="pre">[3.50000e+04,</span> <span class="pre">3.60055e+04],</span> <span class="pre">[3.55000e+04,</span> <span class="pre">3.65150e+04],</span> <span class="pre">[3.60000e+04,</span> <span class="pre">3.69445e+04],</span> <span class="pre">[3.65000e+04,</span> <span class="pre">3.72769e+04],</span> <span class="pre">[3.70000e+04,</span> <span class="pre">3.76006e+04],</span> <span class="pre">[3.75000e+04,</span> <span class="pre">3.78407e+04],</span> <span class="pre">[3.80000e+04,</span> <span class="pre">3.80723e+04],</span> <span class="pre">[3.85000e+04,</span> <span class="pre">3.82196e+04],</span> <span class="pre">[3.90000e+04,</span> <span class="pre">3.83128e+04],</span> <span class="pre">[3.95000e+04,</span> <span class="pre">3.83984e+04],</span> <span class="pre">[4.00000e+04,</span> <span class="pre">3.84307e+04],</span> <span class="pre">[4.05000e+04,</span> <span class="pre">3.84100e+04],</span> <span class="pre">[4.10000e+04,</span> <span class="pre">3.83524e+04],</span> <span class="pre">[4.15000e+04,</span> <span class="pre">3.82432e+04],</span> <span class="pre">[4.20000e+04,</span> <span class="pre">3.81287e+04],</span> <span class="pre">[4.25000e+04,</span> <span class="pre">3.80096e+04],</span> <span class="pre">[4.30000e+04,</span> <span class="pre">3.78105e+04],</span> <span class="pre">[4.35000e+04,</span> <span class="pre">3.76531e+04],</span> <span class="pre">[4.40000e+04,</span> <span class="pre">3.74023e+04],</span> <span class="pre">[4.45000e+04,</span> <span class="pre">3.71790e+04],</span> <span class="pre">[4.50000e+04,</span> <span class="pre">3.68942e+04],</span> <span class="pre">[4.55000e+04,</span> <span class="pre">3.66373e+04],</span> <span class="pre">[4.60000e+04,</span> <span class="pre">3.63352e+04],</span> <span class="pre">[4.65000e+04,</span> <span class="pre">3.59890e+04],</span> <span class="pre">[4.70000e+04,</span> <span class="pre">3.57000e+04],</span> <span class="pre">[4.75000e+04,</span> <span class="pre">3.53536e+04],</span> <span class="pre">[4.80000e+04,</span> <span class="pre">3.49795e+04],</span> <span class="pre">[4.85000e+04,</span> <span class="pre">3.46479e+04],</span> <span class="pre">[4.90000e+04,</span> <span class="pre">3.42752e+04],</span> <span class="pre">[4.95000e+04,</span> <span class="pre">3.38628e+04],</span> <span class="pre">[5.00000e+04,</span> <span class="pre">3.34899e+04],</span> <span class="pre">[5.05000e+04,</span> <span class="pre">3.30836e+04],</span> <span class="pre">[5.10000e+04,</span> <span class="pre">3.26791e+04],</span> <span class="pre">[5.15000e+04,</span> <span class="pre">3.22751e+04],</span> <span class="pre">[5.20000e+04,</span> <span class="pre">3.18398e+04],</span> <span class="pre">[5.25000e+04,</span> <span class="pre">3.14410e+04],</span> <span class="pre">[5.30000e+04,</span> <span class="pre">3.10103e+04],</span> <span class="pre">[5.35000e+04,</span> <span class="pre">3.05821e+04],</span> <span class="pre">[5.40000e+04,</span> <span class="pre">3.01563e+04],</span> <span class="pre">[5.45000e+04,</span> <span class="pre">2.97005e+04],</span> <span class="pre">[5.50000e+04,</span> <span class="pre">2.92796e+04],</span> <span class="pre">[5.55000e+04,</span> <span class="pre">2.88296e+04],</span> <span class="pre">[5.60000e+04,</span> <span class="pre">2.83824e+04],</span> <span class="pre">[5.65000e+04,</span> <span class="pre">2.79381e+04],</span> <span class="pre">[5.70000e+04,</span> <span class="pre">2.74965e+04],</span> <span class="pre">[5.75000e+04,</span> <span class="pre">2.70575e+04],</span> <span class="pre">[5.80000e+04,</span> <span class="pre">6.96222e+04],</span> <span class="pre">[5.85000e+04,</span> <span class="pre">2.61584e+04],</span> <span class="pre">[5.90000e+04,</span> <span class="pre">2.57269e+04],</span> <span class="pre">[5.95000e+04,</span> <span class="pre">1.01222e+05],</span> <span class="pre">[6.00000e+04,</span> <span class="pre">2.48164e+04],</span> <span class="pre">[6.05000e+04,</span> <span class="pre">2.43656e+04],</span> <span class="pre">[6.10000e+04,</span> <span class="pre">2.39174e+04],</span> <span class="pre">[6.15000e+04,</span> <span class="pre">2.34718e+04],</span> <span class="pre">[6.20000e+04,</span> <span class="pre">2.30288e+04],</span> <span class="pre">[6.25000e+04,</span> <span class="pre">2.25881e+04],</span> <span class="pre">[6.30000e+04,</span> <span class="pre">2.21258e+04],</span> <span class="pre">[6.35000e+04,</span> <span class="pre">2.16900e+04],</span> <span class="pre">[6.40000e+04,</span> <span class="pre">2.12564e+04],</span> <span class="pre">[6.45000e+04,</span> <span class="pre">2.08023e+04],</span> <span class="pre">[6.50000e+04,</span> <span class="pre">2.03509e+04],</span> <span class="pre">[6.55000e+04,</span> <span class="pre">1.99230e+04],</span> <span class="pre">[6.60000e+04,</span> <span class="pre">1.94765e+04],</span> <span class="pre">[6.65000e+04,</span> <span class="pre">1.90326e+04],</span> <span class="pre">[6.70000e+04,</span> <span class="pre">4.47529e+04],</span> <span class="pre">[6.75000e+04,</span> <span class="pre">1.81519e+04],</span> <span class="pre">[6.80000e+04,</span> <span class="pre">1.77151e+04],</span> <span class="pre">[6.85000e+04,</span> <span class="pre">1.72804e+04],</span> <span class="pre">[6.90000e+04,</span> <span class="pre">2.37937e+04],</span> <span class="pre">[6.95000e+04,</span> <span class="pre">1.61531e+04],</span> <span class="pre">[7.00000e+04,</span> <span class="pre">1.44526e+04],</span> <span class="pre">[7.05000e+04,</span> <span class="pre">1.41230e+04],</span> <span class="pre">[7.10000e+04,</span> <span class="pre">1.37761e+04],</span> <span class="pre">[7.15000e+04,</span> <span class="pre">1.34418e+04],</span> <span class="pre">[7.20000e+04,</span> <span class="pre">1.31051e+04],</span> <span class="pre">[7.25000e+04,</span> <span class="pre">1.27522e+04],</span> <span class="pre">[7.30000e+04,</span> <span class="pre">1.24112e+04],</span> <span class="pre">[7.35000e+04,</span> <span class="pre">1.20550e+04],</span> <span class="pre">[7.40000e+04,</span> <span class="pre">1.17100e+04],</span> <span class="pre">[7.45000e+04,</span> <span class="pre">1.13507e+04],</span> <span class="pre">[7.50000e+04,</span> <span class="pre">1.10021e+04],</span> <span class="pre">[7.55000e+04,</span> <span class="pre">1.06401e+04],</span> <span class="pre">[7.60000e+04,</span> <span class="pre">1.02771e+04],</span> <span class="pre">[7.65000e+04,</span> <span class="pre">9.92380e+03],</span> <span class="pre">[7.70000e+04,</span> <span class="pre">9.55851e+03],</span> <span class="pre">[7.75000e+04,</span> <span class="pre">9.19241e+03],</span> <span class="pre">[7.80000e+04,</span> <span class="pre">8.83513e+03],</span> <span class="pre">[7.85000e+04,</span> <span class="pre">8.46727e+03],</span> <span class="pre">[7.90000e+04,</span> <span class="pre">8.09884e+03],</span> <span class="pre">[7.95000e+04,</span> <span class="pre">7.72989e+03],</span> <span class="pre">[8.00000e+04,</span> <span class="pre">7.36053e+03],</span> <span class="pre">[8.05000e+04,</span> <span class="pre">6.99082e+03],</span> <span class="pre">[8.10000e+04,</span> <span class="pre">6.62085e+03],</span> <span class="pre">[8.15000e+04,</span> <span class="pre">6.25067e+03],</span> <span class="pre">[8.20000e+04,</span> <span class="pre">5.88674e+03],</span> <span class="pre">[8.25000e+04,</span> <span class="pre">5.51600e+03],</span> <span class="pre">[8.30000e+04,</span> <span class="pre">5.14530e+03],</span> <span class="pre">[8.35000e+04,</span> <span class="pre">4.77470e+03],</span> <span class="pre">[8.40000e+04,</span> <span class="pre">4.39953e+03],</span> <span class="pre">[8.45000e+04,</span> <span class="pre">4.02977e+03],</span> <span class="pre">[8.50000e+04,</span> <span class="pre">3.66033e+03],</span> <span class="pre">[8.55000e+04,</span> <span class="pre">3.29129e+03],</span> <span class="pre">[8.60000e+04,</span> <span class="pre">2.92273e+03],</span> <span class="pre">[8.65000e+04,</span> <span class="pre">2.55471e+03],</span> <span class="pre">[8.70000e+04,</span> <span class="pre">2.18731e+03],</span> <span class="pre">[8.75000e+04,</span> <span class="pre">1.82062e+03],</span> <span class="pre">[8.80000e+04,</span> <span class="pre">1.45468e+03],</span> <span class="pre">[8.85000e+04,</span> <span class="pre">1.08841e+03],</span> <span class="pre">[8.90000e+04,</span> <span class="pre">7.24621e+02],</span> <span class="pre">[8.95000e+04,</span> <span class="pre">3.61821e+02],</span> <span class="pre">[9.00000e+04,</span> <span class="pre">-3.01387e+01]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_abs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#simulate_scatter_no_vr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.simulate_scatter_no_vr" title="Permalink to this definition"></a></dt>
+<dd><p>Produce a grayscale (intensity-based) image representing the photon scatter during an X-Ray,
+without using VR (variance reduction) techniques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>volume</strong> (<em>np.ndarray</em>) – the volume density data.</p></li>
+<li><p><strong>source_ijk</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the source point for rays in the camera’s IJK space</p></li>
+<li><p><strong>rt_kinv</strong> (<em>np.ndarray</em>) – the ray transform for the projection.  Transforms pixel indices (u,v,1) to IJK vector along ray from from the X-Ray source to the detector pixel [u,v].</p></li>
+<li><p><strong>camera_intrinsics</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.CameraIntrinsicTransform" title="deepdrr.geo.CameraIntrinsicTransform"><em>geo.CameraIntrinsicTransform</em></a>) – the C-Arm “camera” intrinsic transform.  Used to calculate the detector plane.</p></li>
+<li><p><strong>source_to_detector_distance</strong> (<em>float</em>) – distance from source to detector in millimeters.</p></li>
+<li><p><strong>index_from_ijk</strong> (<em>np.ndarray</em>) – the inverse transformation of ijk_from_index.  Takes 3D IJK coordinates and transforms to 2D pixel coordinates</p></li>
+<li><p><strong>sensor_size</strong> (<em>Tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the sensor size {width}x{height}, in pixels, of the detector</p></li>
+<li><p><strong>photon_count</strong> (<em>int</em>) – the number of photons simulated.</p></li>
+<li><p><strong>mfp_woodcock</strong> (<em>np.ndarray</em>) – the Woodcock MFP data for the materials being simulated.  See make_woodock_mfp(…).</p></li>
+<li><p><strong>spectrum</strong> (<em>Optional</em><em>[</em><em>np.ndarray</em><em>]</em><em>, </em><em>optional</em>) – spectrum array.  Defaults to 90KV_AL40 spectrum.</p></li>
+<li><p><strong>E_abs</strong> (<em>Optional</em><em>[</em><em>np.float32</em><em>]</em><em>, </em><em>optional</em>) – the energy (in eV) at or below which photons are assumed to be absorbed by the materials.  Defaults to 5000 (eV).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>deposited-energy image of the photon scatter</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deepdrr.projector.scatter.track_single_photon_no_vr">
+<span class="sig-prename descclassname"><span class="pre">deepdrr.projector.scatter.</span></span><span class="sig-name descname"><span class="pre">track_single_photon_no_vr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Vector3D" title="deepdrr.geo.core.Vector3D"><span class="pre">Vector3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_abs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labeled_seg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector_plane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deepdrr.projector.plane_surface.PlaneSurface" title="deepdrr.projector.plane_surface.PlaneSurface"><span class="pre">PlaneSurface</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_from_ijk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_ijk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.Point3D" title="deepdrr.geo.core.Point3D"><span class="pre">Point3D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_to_detector_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mfp_woodcock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float32</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deepdrr/projector/scatter.html#track_single_photon_no_vr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.scatter.track_single_photon_no_vr" title="Permalink to this definition"></a></dt>
+<dd><p>Produce a grayscale (intensity-based) image representing the photon scatter of a single photon
+during an X-Ray, without using VR (variance reduction) techniques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_pos</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Point3D" title="deepdrr.geo.Point3D"><em>geo.Point3D</em></a>) – the initial position (in IJK space) of the photon once it has entered the volume.  This IS NOT the X-Ray source.  See function sample_initial_direction(…)</p></li>
+<li><p><strong>initial_dir</strong> (<a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.Vector3D" title="deepdrr.geo.Vector3D"><em>geo.Vector3D</em></a>) – the initial direction of travel of the photon, in IJK space</p></li>
+<li><p><strong>initital_E</strong> (<em>np.float32</em>) – the initial energy of the photon</p></li>
+<li><p><strong>E_abs</strong> (<em>np.float32</em>) – the energy (in eV) at or below which photons are assumed to be absorbed by the materials.</p></li>
+<li><p><strong>labeled_seg</strong> (<em>np.ndarray</em>) – a [0..N-1]-labeled segmentation of the volume</p></li>
+<li><p><strong>density_vol</strong> (<em>np.ndarray</em>) – the density information of the volume</p></li>
+<li><p><strong>detector_plane</strong> (<em>np.ndarray</em>) – the ‘plane vector’ of the detector</p></li>
+<li><p><strong>index_from_ijk</strong> (<em>np.ndarray</em>) – the inverse transformation of ijk_from_index, the ray transform for the projection.</p></li>
+<li><p><strong>material_ids</strong> (<em>Dict</em><em>[</em><em>int</em><em>,</em><em>str</em><em>]</em>) – a dictionary mapping an integer material ID-label to the name of the material</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>the pixel coord.s of the hit pixel, as well as the energy (in eV) of the photon when it hit the detector.</dt><dd><p>The final int is the number of scatter events experienced by the photon.
+Note that the returned pixel coord.s CAN BE out-of-bounds.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[int, int, np.float32, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deepdrr.projector.spectral_data">
+<span id="deepdrr-projector-spectral-data-module"></span><h2>deepdrr.projector.spectral_data module<a class="headerlink" href="#module-deepdrr.projector.spectral_data" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-deepdrr.projector">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deepdrr.projector" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deepdrr.projector.</span></span><span class="sig-name descname"><span class="pre">Projector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priorities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_intrinsics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraIntrinsicTransform" title="deepdrr.geo.core.CameraIntrinsicTransform"><span class="pre">CameraIntrinsicTransform</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.device.html#deepdrr.device.device.Device" title="deepdrr.device.device.Device"><span class="pre">Device</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'90KV_AL40'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_scatter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photon_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_block_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collected_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neglog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity_upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuate_outside_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_to_detector_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.device.html#deepdrr.device.device.Device" title="deepdrr.device.device.Device"><span class="pre">Device</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.Projector" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.camera_intrinsics">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">camera_intrinsics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraIntrinsicTransform" title="deepdrr.geo.core.CameraIntrinsicTransform"><span class="pre">CameraIntrinsicTransform</span></a></em><a class="headerlink" href="#deepdrr.projector.Projector.camera_intrinsics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.free">
+<span class="sig-name descname"><span class="pre">free</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.free"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.Projector.free" title="Permalink to this definition"></a></dt>
+<dd><p>Free the allocated GPU memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.Projector.initialize" title="Permalink to this definition"></a></dt>
+<dd><p>Allocate GPU memory and transfer the volume, segmentations to GPU.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.initialize_output_arrays">
+<span class="sig-name descname"><span class="pre">initialize_output_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.initialize_output_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.Projector.initialize_output_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Allocate arrays dependent on the output size. Frees previously allocated arrays.</p>
+<p>This may have to be called multiple times if the output size changes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.output_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#deepdrr.projector.Projector.output_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.project">
+<span class="sig-name descname"><span class="pre">project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">camera_projections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="deepdrr.geo.html#deepdrr.geo.core.CameraProjection" title="deepdrr.geo.core.CameraProjection"><span class="pre">CameraProjection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.Projector.project" title="Permalink to this definition"></a></dt>
+<dd><p>Perform the projection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>camera_projection</strong> – any number of camera projections. If none are provided, the Projector uses the CArm device to obtain a camera projection.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if no projections are provided and self.device is None.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array of DRRs, after mass attenuation, etc.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.project_over_carm_range">
+<span class="sig-name descname"><span class="pre">project_over_carm_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/deepdrr/projector/projector.html#Projector.project_over_carm_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deepdrr.projector.Projector.project_over_carm_range" title="Permalink to this definition"></a></dt>
+<dd><p>Project over a range of angles using the included CArm.</p>
+<p>Ignores the CArm’s internal pose, except for its isocenter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.source_to_detector_distance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_to_detector_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#deepdrr.projector.Projector.source_to_detector_distance" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.volume">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><a class="headerlink" href="#deepdrr.projector.Projector.volume" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deepdrr.projector.Projector.volumes">
+<span class="sig-name descname"><span class="pre">volumes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="deepdrr.vol.html#deepdrr.vol.volume.Volume" title="deepdrr.vol.volume.Volume"><span class="pre">Volume</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#deepdrr.projector.Projector.volumes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deepdrr.instruments.html" class="btn btn-neutral float-left" title="deepdrr.instruments package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deepdrr.projector.mcgpu_incoherent_scatter_data.html" class="btn btn-neutral float-right" title="deepdrr.projector.mcgpu_incoherent_scatter_data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 自用.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

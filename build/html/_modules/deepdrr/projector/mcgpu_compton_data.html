@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.projector.mcgpu_compton_data &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.projector.mcgpu_compton_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.projector.mcgpu_compton_data</h1><div class="highlight"><pre>
+<span></span><span class="c1"># NUM_SHELLS imports</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.adipose_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">adipose_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">ADIPOSE_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.air_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">air_NUM_SHELLS</span> <span class="k">as</span> <span class="n">AIR_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.blood_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">blood_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">BLOOD_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.bone_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">bone_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">BONE_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.brain_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">brain_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">BRAIN_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.breast_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">breast_NUM_SHELLS</span> <span class="k">as</span> <span class="n">BREAST_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.cartilage_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cartilage_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">CARTILAGE_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.connective_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">connective_Woodard_NUM_SHELLS</span> <span class="k">as</span> <span class="n">CONNECTIVE_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.glands_others_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">glands_others_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">GLANDS_OTHERS_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.liver_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">liver_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">LIVER_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.lung_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">lung_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">LUNG_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.muscle_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">muscle_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">MUSCLE_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.PMMA_compton_data</span> <span class="kn">import</span> <span class="n">PMMA_NUM_SHELLS</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.red_marrow_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">red_marrow_Woodard_NUM_SHELLS</span> <span class="k">as</span> <span class="n">RED_MARROW_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.skin_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">skin_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">SKIN_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.soft_tissue_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">soft_tissue_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">SOFT_TISSUE_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.stomach_intestines_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">stomach_intestines_ICRP110_NUM_SHELLS</span> <span class="k">as</span> <span class="n">STOMACH_INTESTINES_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.titanium_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">titanium_NUM_SHELLS</span> <span class="k">as</span> <span class="n">TITANIUM_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.water_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">water_NUM_SHELLS</span> <span class="k">as</span> <span class="n">WATER_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Compton shell data imports</span>
+
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.adipose_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">adipose_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">ADIPOSE_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.air_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">air_compton_data</span> <span class="k">as</span> <span class="n">AIR_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.blood_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">blood_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">BLOOD_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.bone_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">bone_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">BONE_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.brain_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">brain_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">BRAIN_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.breast_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">breast_compton_data</span> <span class="k">as</span> <span class="n">BREAST_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.cartilage_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cartilage_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">CARTILAGE_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.connective_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">connective_Woodard_compton_data</span> <span class="k">as</span> <span class="n">CONNECTIVE_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.glands_others_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">glands_others_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">GLANDS_OTHERS_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.liver_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">liver_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">LIVER_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.lung_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">lung_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">LUNG_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.muscle_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">muscle_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">MUSCLE_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.PMMA_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PMMA_compton_data</span> <span class="k">as</span> <span class="n">PMMA_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.red_marrow_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">red_marrow_Woodard_compton_data</span> <span class="k">as</span> <span class="n">RED_MARROW_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.skin_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">skin_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">SKIN_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.soft_tissue_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">soft_tissue_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">SOFT_TISSUE_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.stomach_intestines_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">stomach_intestines_ICRP110_compton_data</span> <span class="k">as</span> <span class="n">STOMACH_INTESTINES_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.titanium_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">titanium_compton_data</span> <span class="k">as</span> <span class="n">TITANIUM_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_incoherent_scatter_data.water_compton_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">water_compton_data</span> <span class="k">as</span> <span class="n">WATER_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">MAX_NSHELLS</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">MATERIAL_NSHELLS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;adipose&quot;</span><span class="p">:</span> <span class="n">ADIPOSE_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;air&quot;</span><span class="p">:</span> <span class="n">AIR_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;blood&quot;</span><span class="p">:</span> <span class="n">BLOOD_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;bone&quot;</span><span class="p">:</span> <span class="n">BONE_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;brain&quot;</span><span class="p">:</span> <span class="n">BRAIN_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;breast&quot;</span><span class="p">:</span> <span class="n">BREAST_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;cartilage&quot;</span><span class="p">:</span> <span class="n">CARTILAGE_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;connective tissue&quot;</span><span class="p">:</span> <span class="n">CONNECTIVE_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;glands&quot;</span><span class="p">:</span> <span class="n">GLANDS_OTHERS_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;liver&quot;</span><span class="p">:</span> <span class="n">LIVER_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;lung&quot;</span><span class="p">:</span> <span class="n">LUNG_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;muscle&quot;</span><span class="p">:</span> <span class="n">MUSCLE_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;PMMA&quot;</span><span class="p">:</span> <span class="n">PMMA_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;red marrow&quot;</span><span class="p">:</span> <span class="n">RED_MARROW_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;skin&quot;</span><span class="p">:</span> <span class="n">SKIN_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;soft tissue&quot;</span><span class="p">:</span> <span class="n">SOFT_TISSUE_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;stomach intestines&quot;</span><span class="p">:</span> <span class="n">STOMACH_INTESTINES_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;titanium&quot;</span><span class="p">:</span> <span class="n">TITANIUM_NUM_SHELLS</span><span class="p">,</span>
+    <span class="s2">&quot;water&quot;</span><span class="p">:</span> <span class="n">WATER_NUM_SHELLS</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">COMPTON_DATA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;adipose&quot;</span><span class="p">:</span> <span class="n">ADIPOSE_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;air&quot;</span><span class="p">:</span> <span class="n">AIR_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;blood&quot;</span><span class="p">:</span> <span class="n">BLOOD_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;bone&quot;</span><span class="p">:</span> <span class="n">BONE_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;brain&quot;</span><span class="p">:</span> <span class="n">BRAIN_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;breast&quot;</span><span class="p">:</span> <span class="n">BREAST_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;cartilage&quot;</span><span class="p">:</span> <span class="n">CARTILAGE_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;connective tissue&quot;</span><span class="p">:</span> <span class="n">CONNECTIVE_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;glands&quot;</span><span class="p">:</span> <span class="n">GLANDS_OTHERS_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;liver&quot;</span><span class="p">:</span> <span class="n">LIVER_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;lung&quot;</span><span class="p">:</span> <span class="n">LUNG_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;muscle&quot;</span><span class="p">:</span> <span class="n">MUSCLE_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;PMMA&quot;</span><span class="p">:</span> <span class="n">PMMA_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;red marrow&quot;</span><span class="p">:</span> <span class="n">RED_MARROW_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;skin&quot;</span><span class="p">:</span> <span class="n">SKIN_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;soft tissue&quot;</span><span class="p">:</span> <span class="n">SOFT_TISSUE_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;stomach intestines&quot;</span><span class="p">:</span> <span class="n">STOMACH_INTESTINES_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;titanium&quot;</span><span class="p">:</span> <span class="n">TITANIUM_COMPTON_DATA</span><span class="p">,</span>
+    <span class="s2">&quot;water&quot;</span><span class="p">:</span> <span class="n">WATER_COMPTON_DATA</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="sanity_check_compton_data"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.mcgpu_compton_data.sanity_check_compton_data">[docs]</a><span class="k">def</span> <span class="nf">sanity_check_compton_data</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">COMPTON_DATA</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">assert</span> <span class="n">MATERIAL_NSHELLS</span><span class="p">[</span><span class="n">mat</span><span class="p">]</span> <span class="o">==</span> <span class="n">COMPTON_DATA</span><span class="p">[</span><span class="n">mat</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Compton data sanity has been checked!&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

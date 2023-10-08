@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.device.simple_device &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.device.simple_device</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.device.simple_device</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">geo</span>
+<span class="kn">from</span> <span class="nn">.device</span> <span class="kn">import</span> <span class="n">Device</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SimpleDevice"><a class="viewcode-back" href="../../../deepdrr.device.html#deepdrr.device.simple_device.SimpleDevice">[docs]</a><span class="k">class</span> <span class="nc">SimpleDevice</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple C-arm with a point, direction interface to set views.</span>
+
+<span class="sd">    The &quot;point&quot; being positioned is always at the midpoint of the source and detector. The direction</span>
+<span class="sd">    is the direction from the source to the detector. The up-vector of images can also be provided,</span>
+<span class="sd">    not necessarily in the image plane (projected onto it).</span>
+
+<span class="sd">    Any of the device&#39;s attributes can be set directly. The default values are not based on any</span>
+<span class="sd">    particular device.</span>
+
+<span class="sd">    This class may be useful for understanding basic concepts.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sensor_height (int): the height of the sensor in pixels.</span>
+<span class="sd">        sensor_width (int): the width of the sensor in pixels.</span>
+<span class="sd">        pixel_size (float): the size of a pixel in mm.</span>
+<span class="sd">        source_to_detector_distance (float): the distance from the source to the detector in mm.</span>
+<span class="sd">        world_from_device (FrameTransform): the &quot;world_from_device&quot; frame transformation for the device.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sensor_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">sensor_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">pixel_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">source_to_detector_distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span>
+        <span class="n">world_from_device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensor_height</span> <span class="o">=</span> <span class="n">sensor_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensor_width</span> <span class="o">=</span> <span class="n">sensor_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">pixel_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span> <span class="o">=</span> <span class="n">source_to_detector_distance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world_from_device</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">frame_transform</span><span class="p">(</span><span class="n">world_from_device</span><span class="p">)</span>
+
+        <span class="c1"># Default view centered on the origin. Sets the device_from_camera3d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_view</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">camera_intrinsics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraIntrinsicTransform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the camera intrinsics for the device.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CameraIntrinsicTransform: the camera intrinsics for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensor_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensor_height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraIntrinsicTransform</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">sensor_height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sensor_height</span><span class="p">,</span>
+            <span class="n">sensor_width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sensor_width</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SimpleDevice.set_view"><a class="viewcode-back" href="../../../deepdrr.device.html#deepdrr.device.simple_device.SimpleDevice.set_view">[docs]</a>    <span class="k">def</span> <span class="nf">set_view</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">up</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source_to_point_distance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source_to_point_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the view of the device.</span>
+
+<span class="sd">        Can be called with a Ray3D as the first argument, by doing `device.set_view(*ray)`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            center (Point3D): the point at the center of the source and detector, in world coordinates. If None,</span>
+<span class="sd">                the point is left unchanged (rotation only). Default: None.</span>
+<span class="sd">            direction (Vector3D): the direction from the source to the detector, in world coordinates. If None,</span>
+<span class="sd">                the direction is set to the +Z axis. Default: None.</span>
+<span class="sd">            up (Vector3D): the up vector of the image, in world_coordinates. It&#39;s projection</span>
+<span class="sd">                corresponds to the -Y axis in the camera3d frame. If None, the up vector is set to the -Y</span>
+<span class="sd">                axis of the device frame.</span>
+<span class="sd">            source_to_point_distance (float): the distance from the source to the point. If None, the distance</span>
+<span class="sd">                is `source_to_point_fraction` of the source-to-detector distance. Default: None.</span>
+<span class="sd">            source_to_point_fraction (float): the fraction of the source-to-detector distance to use as the</span>
+<span class="sd">                source-to-point distance. Default: 0.5.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">source_to_point_distance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">source_to_point_distance</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span> <span class="o">*</span> <span class="n">source_to_point_fraction</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">point_in_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_camera3d</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">source_to_point_distance</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">point_in_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_world</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">direction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">direction_in_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_camera3d</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">direction_in_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_world</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">up</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">up_in_device</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">up_in_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_world</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="n">up</span><span class="p">)</span>
+
+        <span class="c1"># Get the &quot;ray&quot; frame, which has its origin at the isocenter and its z-axis along the ray.</span>
+        <span class="c1"># The &quot;ray&quot; frame has an arbitrary rotation about the z-axis.</span>
+        <span class="n">z_axis</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rotvec</span> <span class="o">:=</span> <span class="n">z_axis</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">direction_in_device</span><span class="p">))</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+            <span class="c1"># The direction is parallel to the z-axis. The ray frame is the device frame.</span>
+            <span class="n">rotvec</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rotvec</span> <span class="o">=</span> <span class="n">rotvec</span><span class="o">.</span><span class="n">hat</span><span class="p">()</span> <span class="o">*</span> <span class="n">z_axis</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">direction_in_device</span><span class="p">)</span>
+        <span class="n">rot</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Rotation</span><span class="o">.</span><span class="n">from_rotvec</span><span class="p">(</span><span class="n">rotvec</span><span class="p">)</span>
+        <span class="n">device_from_ray</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">F</span><span class="o">.</span><span class="n">from_rt</span><span class="p">(</span><span class="n">rot</span><span class="p">,</span> <span class="n">point_in_device</span><span class="p">)</span>
+
+        <span class="c1"># Get the &quot;ray-up&quot; frame, which is rotated about Z to align the up vector with the -Y axis.</span>
+        <span class="c1"># TODO: something is wrong here.</span>
+        <span class="n">neg_y_axis</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">up_vector_in_ray</span> <span class="o">=</span> <span class="n">device_from_ray</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span> <span class="o">@</span> <span class="n">up_in_device</span>
+        <span class="n">up_vector_in_image_plane</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span>
+            <span class="n">up_vector_in_ray</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">up_vector_in_ray</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">rotvec</span> <span class="o">:=</span> <span class="n">neg_y_axis</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">up_vector_in_image_plane</span><span class="p">))</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+            <span class="c1"># The up vector is parallel to the -Y axis. The ray-up frame is the ray frame.</span>
+            <span class="n">rotvec</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rotvec</span> <span class="o">=</span> <span class="n">rotvec</span><span class="o">.</span><span class="n">hat</span><span class="p">()</span> <span class="o">*</span> <span class="n">neg_y_axis</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">up_vector_in_image_plane</span><span class="p">)</span>
+        <span class="n">rot</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Rotation</span><span class="o">.</span><span class="n">from_rotvec</span><span class="p">(</span><span class="n">rotvec</span><span class="p">)</span>
+        <span class="n">ray_from_ray_up</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">F</span><span class="o">.</span><span class="n">from_rt</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+
+        <span class="c1"># Get the &quot;camera3d&quot; frame, which is translated in negative z.</span>
+        <span class="n">ray_up_from_camera3d</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">F</span><span class="o">.</span><span class="n">from_rt</span><span class="p">(</span>
+            <span class="n">translation</span><span class="o">=</span><span class="n">geo</span><span class="o">.</span><span class="n">vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">source_to_point_distance</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_device_from_camera3d</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">device_from_ray</span> <span class="o">@</span> <span class="n">ray_from_ray_up</span> <span class="o">@</span> <span class="n">ray_up_from_camera3d</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">device_from_camera3d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_from_camera3d</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

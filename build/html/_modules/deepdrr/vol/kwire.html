@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.vol.kwire &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.vol.kwire</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.vol.kwire</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Volume</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">geo</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">data_utils</span><span class="p">,</span> <span class="n">radians</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="KWire"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire">[docs]</a><span class="k">class</span> <span class="nc">KWire</span><span class="p">(</span><span class="n">Volume</span><span class="p">):</span>
+    <span class="n">_mesh_material</span> <span class="o">=</span> <span class="s2">&quot;iron&quot;</span>
+
+    <span class="n">diameter</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># mm</span>
+    <span class="n">tip_in_IJK</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+    <span class="n">base_in_IJK</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">tip</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A special volume which can be positioned using the tip and base points.</span>
+
+<span class="sd">        Use the `from_example()` class method to create a KWire from the example volume (which will be downloaded).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tip (geo.Point3D): The location of the tool tip in RAS.</span>
+<span class="sd">            base (geo.Point3D): The location of the tool base in RAS.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">KWire</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">tip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_IJK</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IJK_from_anatomical</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_in_IJK</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IJK_from_anatomical</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+
+<div class="viewcode-block" id="KWire.from_example"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire.from_example">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_example</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">7.5</span><span class="p">,</span>
+        <span class="n">world_from_anatomical</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">F</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a KWire from the provided download link.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            density (float, optional): Density of the K-wire metal.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            KWire: The example KWire built into DeepDRR.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/bkillee1_jh_edu/ERoEsDbaFj9InktoRKnrT-MBSF2oCOrZ9uyOeWViRx4-Qg?e=s5fofv&amp;download=1&quot;</span>
+        <span class="n">md5</span> <span class="o">=</span> <span class="s2">&quot;83ba7b63ebc0912d34ed5880460f81bd&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;Kwire2.nii.gz&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">data_utils</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="n">md5</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+        <span class="n">tool</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_nifti</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">density_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">),</span>
+            <span class="n">tip</span><span class="o">=</span><span class="n">tip</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+            <span class="n">world_from_anatomical</span><span class="o">=</span><span class="n">world_from_anatomical</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># scale the tool to the desired radius</span>
+        <span class="n">tool</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">diameter</span> <span class="o">/</span> <span class="n">tool</span><span class="o">.</span><span class="n">diameter</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tool</span></div>
+
+<div class="viewcode-block" id="KWire.scale"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scales the volume by the given factor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            factor (float): The factor by which to scale the tool. 1 would be no scaling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scaling</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">F</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_from_IJK</span> <span class="o">=</span> <span class="n">scaling</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_from_IJK</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_convert_hounsfield_to_density</span><span class="p">(</span><span class="n">hu_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">7.5</span><span class="p">):</span>
+        <span class="c1"># TODO: coefficient should be 2?</span>
+        <span class="c1"># Should be density of steel.</span>
+        <span class="k">return</span> <span class="n">density</span> <span class="o">*</span> <span class="n">hu_values</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_segment_materials</span><span class="p">(</span>
+        <span class="n">hu_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">use_thresholding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_thresholding</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">iron</span><span class="o">=</span><span class="p">(</span><span class="n">hu_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The tip of the tool in world space.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_from_IJK</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_IJK</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">base</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The base of the tool in world space.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anatomical_from_IJK</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_IJK</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tip_in_ijk</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_IJK</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">base_in_ijk</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_IJK</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tip_in_anatomical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the location of the tool tip (the pointy end) in anatomical coordinates.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tip</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">base_in_anatomical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the location of the tool base in anatomical coordinates.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tip_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the location of the tool tip (the pointy end) in world coordinates.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_IJK</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_IJK</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">base_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the location of the tool base in world coordinates.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_IJK</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_IJK</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">length_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tip_in_world</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_world</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+
+<div class="viewcode-block" id="KWire.align"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire.align">[docs]</a>    <span class="k">def</span> <span class="nf">align</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">startpoint_in_world</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">endpoint_in_world</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">progress</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Align the tool so that it lies between the two points, tip pointing toward the endpoint.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_point_in_world (geo.Point3D): The first point, in world space.</span>
+<span class="sd">            end_point_in_world (geo.Point3D): The second point, in world space. The tip of the tool points toward this point.</span>
+<span class="sd">            progress (float, optional): Where to place the tip of the tool between the start and end point,</span>
+<span class="sd">                on a scale from 0 to 1. 0 corresponds to the tip placed at the start point, 1 at the end point. Defaults to 1.0.</span>
+<span class="sd">            distance (Optional[float], optional): The distance of the tip along the trajectory. 0 corresponds</span>
+<span class="sd">                to the tip placed at the start point, |startpoint - endpoint| at the end point.</span>
+<span class="sd">                Overrides progress if provided. Defaults to None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># useful: https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d</span>
+        <span class="n">startpoint_in_world</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">startpoint_in_world</span><span class="p">)</span>
+        <span class="n">endpoint_in_world</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">endpoint_in_world</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">distance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">endpoint_in_world</span> <span class="o">-</span> <span class="n">startpoint_in_world</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span> <span class="o">*</span> <span class="n">progress</span>
+
+        <span class="c1"># interpolate along the direction of the tool to get the desired points in world.</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="p">(</span><span class="n">endpoint_in_world</span> <span class="o">-</span> <span class="n">startpoint_in_world</span><span class="p">)</span><span class="o">.</span><span class="n">hat</span><span class="p">()</span>
+        <span class="n">desired_tip_in_world</span> <span class="o">=</span> <span class="n">startpoint_in_world</span> <span class="o">+</span> <span class="n">distance</span> <span class="o">*</span> <span class="n">direction</span>
+        <span class="n">desired_base_in_world</span> <span class="o">=</span> <span class="n">desired_tip_in_world</span> <span class="o">-</span> <span class="n">direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_in_world</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="o">.</span><span class="n">from_line_segments</span><span class="p">(</span>
+            <span class="n">desired_tip_in_world</span><span class="p">,</span>
+            <span class="n">desired_base_in_world</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_anatomical</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_in_anatomical</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">trajectory_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Ray3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geo</span><span class="o">.</span><span class="n">Ray3D</span><span class="o">.</span><span class="n">from_pn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tip_in_world</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_world</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">centerline_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Line3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geo</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tip_in_world</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_world</span><span class="p">)</span>
+
+<div class="viewcode-block" id="KWire.orient"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire.orient">[docs]</a>    <span class="k">def</span> <span class="nf">orient</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">startpoint</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Place the tip at startpoint and orient the tool to point toward the direction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">(</span>
+            <span class="n">startpoint</span><span class="p">,</span>
+            <span class="n">startpoint</span> <span class="o">+</span> <span class="n">direction</span><span class="o">.</span><span class="n">hat</span><span class="p">(),</span>
+            <span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="KWire.twist"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire.twist">[docs]</a>    <span class="k">def</span> <span class="nf">twist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rotate the tool clockwise (when looking down on it) by `angle`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            angle (float): The angle.</span>
+<span class="sd">            degrees (bool, optional): Whether `angle` is in degrees. Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rotvec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tip</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">)</span><span class="o">.</span><span class="n">hat</span><span class="p">()</span>
+        <span class="n">rotvec</span> <span class="o">*=</span> <span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_anatomical</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">frame_transform</span><span class="p">(</span>
+            <span class="n">geo</span><span class="o">.</span><span class="n">Rotation</span><span class="o">.</span><span class="n">from_rotvec</span><span class="p">(</span><span class="n">rotvec</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="KWire.advance"><a class="viewcode-back" href="../../../deepdrr.vol.html#deepdrr.vol.kwire.KWire.advance">[docs]</a>    <span class="k">def</span> <span class="nf">advance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move the tool forward by the given distance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            distance (float): The distance to move the tool forward.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_world</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tip_in_world</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tip_in_world</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_in_world</span><span class="p">),</span>
+            <span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

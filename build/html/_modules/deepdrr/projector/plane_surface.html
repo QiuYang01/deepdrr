@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.projector.plane_surface &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.projector.plane_surface</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.projector.plane_surface</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">deepdrr</span> <span class="kn">import</span> <span class="n">geo</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="PlaneSurface"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.plane_surface.PlaneSurface">[docs]</a><span class="k">class</span> <span class="nc">PlaneSurface</span><span class="p">:</span>
+    <span class="n">plane_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">surface_origin</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">basis_1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">basis_2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">bounds</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">orthogonal</span><span class="p">:</span> <span class="nb">bool</span>
+    
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">plane_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">surface_origin</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">,</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">],</span>
+        <span class="n">bounds</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">orthogonal</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A representation of a rectangular region on a 2D plane embedded in 3D space.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plane_vector (np.ndarray): a 1x4 matrix uniquely identifying the plane.  The first three elements are the normal vector, and the fourth element is the distance between the plane and the origin of the coordinate axes.  \\vec{m} = (n_x, n_y, n_z, d), where \\hat{n} is the normal vector to the plane, and &#39;d&#39; is the distance away from the origin</span>
+<span class="sd">            surface_origin (geo.Point3D): a point on the plane that is used as a reference point for every other position on the surface.  Points on the plane are only on the surface if the point is [surface_origin] + [in-bounds coefficients] * [basis]</span>
+<span class="sd">            basis (Tuple[geo.Vector3D, geo.Vector3D]): an orthogonal (NOT necessarily orthonormal) basis for the plane.  All points on the plane are represented by [surface_origin] + [linear combination of basis]</span>
+<span class="sd">            bounds (np.ndarray): a 2x2 matrix that provides the in-bounds coefficients for the linear combination of the basis vectors.  bounds[0,0] and bounds[0,1] give the lower and upper bounds (inclusive) on the acceptable coefficient for the first basis vector, and bounds[1,0] and bounds[1,1] behave the same for the second basis vector</span>
+<span class="sd">            orthogonal (bool): if True, then the user guarantees that the provided basis is orthogonal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plane_vector</span> <span class="o">=</span> <span class="n">plane_vector</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface_origin</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">surface_origin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basis_1</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basis_2</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">basis</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span> <span class="o">=</span> <span class="n">orthogonal</span>
+
+        <span class="c1"># Check that the basis is orthogonal if it is purported to be:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="n">b1_dot_b2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis_1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">b1_dot_b2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PlaneSurface.check_ray_intersection"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.plane_surface.PlaneSurface.check_ray_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">check_ray_intersection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates whether or not a photon at the specified position, travelling in the specified direction, will hit the plane of the PlaneSurface object.</span>
+
+<span class="sd">        It is imperative that all of the arguments are in the same coordinate system (unchecked).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pos (geo.Point3D): the position of the photon</span>
+<span class="sd">            dir (geo.Vector3D): the direction that the photon is travelling in</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.float32: if there will be an intersection, the distance to the intersection.  If no intersection, returns a negative number (the negative number does not necessarily have a geometrical meaning) </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># (\vec{pos} + \alpha * \vec{dir}) \cdot \vec{m} = 0, then (\vec{pos} + \alpha * \vec{dir}) is the point of intersection.</span>
+        <span class="c1"># Want to return None if \alpha &lt; 0, since then the photon is actually travelling the wrong way to hit the plane.</span>
+        <span class="n">r_dot_m</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">plane_vector</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">r_dot_m</span><span class="p">:</span>
+            <span class="c1"># &#39;pos&#39; is already on the plane</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">d_dot_m</span> <span class="o">=</span> <span class="p">(</span><span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">plane_vector</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">d_dot_m</span><span class="p">:</span>
+            <span class="c1"># &#39;direction&#39; is perpendicular to the normal vector of the plane ==&gt; will never intersect</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">r_dot_m</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_dot_m</span></div>
+
+<div class="viewcode-block" id="PlaneSurface.point_on_surface"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.plane_surface.PlaneSurface.point_on_surface">[docs]</a>    <span class="k">def</span> <span class="nf">point_on_surface</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether the given point, which is assumed to be on the plane of the surface, is within the bounds of the surface.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point (geo.Point3D): the point to check</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the point is in-bounds, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coef_1</span><span class="p">,</span> <span class="n">coef_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lin_comb_coefs</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">coef_1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coef_1</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">coef_2</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">coef_2</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="PlaneSurface.point_on_surface_checking"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.plane_surface.PlaneSurface.point_on_surface_checking">[docs]</a>    <span class="k">def</span> <span class="nf">point_on_surface_checking</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether the given point, which is not assumed to be on the plane of the surface, is within the bounds of the surface.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point (geo.Point3D): the point to check</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the point is on the plane and in-bounds, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pvec</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="mi">4</span><span class="p">,)</span> <span class="o">==</span> <span class="n">pvec</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">pvec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">pvec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plane_vector</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_on_surface</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="PlaneSurface.get_lin_comb_coefs"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.plane_surface.PlaneSurface.get_lin_comb_coefs">[docs]</a>    <span class="k">def</span> <span class="nf">get_lin_comb_coefs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the &#39;coordinates&#39; of the point in the plane, where the &#39;origin&#39; in the plane is PlaneSurface.surface_origin, </span>
+<span class="sd">        and where the coordinate axes correspond to the PlaneSurface basis vectors.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point (geo.Point3D): the point to check</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[np.float32, np.float32]: the coefficients for the two basis vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lin_comb_orthogonal</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lin_comb_general</span><span class="p">(</span><span class="n">point</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_lin_comb_orthogonal</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the &#39;coordinates&#39; of the point in the plane, where the &#39;origin&#39; in the plane is PlaneSurface.surface_origin, </span>
+<span class="sd">        and where the coordinate axes correspond to the PlaneSurface basis vectors.  Assumes that the basis vectors are orthogonal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point (geo.Point3D): the point to check</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[np.float32, np.float32]: the coefficients for the two basis vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Working in 3D (i.e., non-homogeneous) coordinates:</span>
+        <span class="c1"># Let \vec{x} := point, \vec{s} := surface_origin. Thus, (\vec{x} - \vec{s}) = \alpha_1 * b_1 + \alpha_2 * b_2, </span>
+        <span class="c1"># where {b_1, b_2} is the orthonormal basis.  In other terms,</span>
+        <span class="c1">#</span>
+        <span class="c1">#       (\vec{x} - \vec{s}) = (b_1 b_2) (\alpha_1 \alpha_2)^T = B \vec{\alpha}</span>
+        <span class="c1">#</span>
+        <span class="c1"># Accordingly,</span>
+        <span class="c1"># </span>
+        <span class="c1">#       \vec{\alpha} = B^{-1} (\vec{x} - \vec{s})</span>
+        <span class="c1"># </span>
+        <span class="c1"># where B^{-1} is the left-inverse of the 3x2 matrix B = (b_1 b_2).  Since the basis {b_1, b_2} is orthogonal,</span>
+        <span class="c1"># we have:</span>
+        <span class="c1"># </span>
+        <span class="c1">#       B^{-1} = ( b_1^T / magnitude(b_1)^2</span>
+        <span class="c1">#                  b_2^T / magnitude(b_2)^2 )</span>
+        <span class="c1">#</span>
+        <span class="c1"># Once we have \vec{\alpha}, we just need to check against the acceptable bounds, given by self.bounds</span>
+
+        <span class="n">disp_np_3</span> <span class="o">=</span> <span class="p">(</span><span class="n">point</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_origin</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># \vec{x} - \vec{s}, only 3 values (non-homogeneous)</span>
+
+        <span class="n">b_1_np_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_1</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># b_1, only 3 values (non-homogeneous)</span>
+        <span class="n">alpha_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_1_np_3</span><span class="p">,</span> <span class="n">disp_np_3</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_1_np_3</span><span class="p">,</span> <span class="n">b_1_np_3</span><span class="p">)</span>
+
+        <span class="n">b_2_np_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># b_2, only 3 values (non-homogeneous)</span>
+        <span class="n">alpha_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_2_np_3</span><span class="p">,</span> <span class="n">disp_np_3</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_2_np_3</span><span class="p">,</span> <span class="n">b_2_np_3</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">alpha_1</span><span class="p">,</span> <span class="n">alpha_2</span>
+
+    <span class="k">def</span> <span class="nf">_get_lin_comb_general</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">point</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the &#39;coordinates&#39; of the point in the plane, where the &#39;origin&#39; in the plane is PlaneSurface.surface_origin, </span>
+<span class="sd">        and where the coordinate axes correspond to the PlaneSurface basis vectors.  Does not assume that the basis vectors are orthogonal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point (geo.Point3D): the point to check</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[np.float32, np.float32]: the coefficients for the two basis vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Working in 3D (i.e., non-homogeneous) coordinates:</span>
+        <span class="c1"># Let \vec{x} := point, \vec{s} := surface_origin. Thus, (\vec{x} - \vec{s}) = \alpha_1 * b_1 + \alpha_2 * b_2, </span>
+        <span class="c1"># where {b_1, b_2} is the orthonormal basis.  In other terms,</span>
+        <span class="c1">#</span>
+        <span class="c1">#       (\vec{x} - \vec{s}) = (b_1 b_2) (\alpha_1 \alpha_2)^T = B \vec{\alpha}</span>
+        <span class="c1">#</span>
+        <span class="c1"># Accordingly,</span>
+        <span class="c1"># </span>
+        <span class="c1">#       \vec{\alpha} = B^{-1} (\vec{x} - \vec{s})</span>
+        <span class="c1"># </span>
+        <span class="c1"># where B^{-1} is the left-inverse of the 3x2 matrix B = (b_1 b_2).  Since the basis vectors are linearly independent,</span>
+        <span class="c1"># (B^T B) is invertible.  Accordingly, ((B^T B)^{-1} B^T) is the left-inverse of B. </span>
+        <span class="c1"># </span>
+        <span class="c1"># Let D_ij := dot_product(b_i, b_j) be the dot product between the i-th and j-th basis vectors.</span>
+        <span class="c1"># </span>
+        <span class="c1">#       (B^T B) = [D_11 D_12]</span>
+        <span class="c1">#                 [D_21 D_22]</span>
+        <span class="c1"># </span>
+        <span class="c1">#       (B^T B)^{-1} = (1 / (D_11 D_22 - D_12 D_21)) [ D_22 -D_12]</span>
+        <span class="c1">#                                                    [-D_21  D_11]</span>
+        <span class="c1">#</span>
+        <span class="c1">#                    = (1 / det(B^T B)) [ D_22 -D_12]</span>
+        <span class="c1">#                                       [-D_21  D_11]</span>
+        <span class="c1">#</span>
+        <span class="c1"># Thus, \vec{\alpha} = (B^T B)^{-1} (B^T (\vec{x} - \vec{s})) by the associative property of matrix multiplication.</span>
+        <span class="c1"># </span>
+        <span class="c1">#   \vec{\beta} = B^T (\vec{x} - \vec{s})</span>
+        <span class="c1">#</span>
+        <span class="c1">#   \vec{\alpha} = (B^T B)^{-1} \vec{\beta}</span>
+        <span class="c1">#                = (1 / det(B^T B)) [ D_22 -D_12] [beta_1]</span>
+        <span class="c1">#                                   [-D_21  D_11] [beta_2]</span>
+        <span class="c1">#</span>
+        <span class="c1"># Once we have \vec{\alpha}, we just need to check against the acceptable bounds, given by self.bounds</span>
+
+        <span class="n">disp_np_3</span> <span class="o">=</span> <span class="p">(</span><span class="n">point</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_origin</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># \vec{x} - \vec{s}, only 3 values (non-homogeneous)</span>
+
+        <span class="n">b_1_np_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_1</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># b_1, only 3 values (non-homogeneous)</span>
+        <span class="n">b_2_np_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># b_2, only 3 values (non-homogeneous)</span>
+
+        <span class="n">D_11</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_1_np_3</span><span class="p">,</span> <span class="n">b_1_np_3</span><span class="p">)</span>
+        <span class="n">D_22</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_2_np_3</span><span class="p">,</span> <span class="n">b_2_np_3</span><span class="p">)</span>
+        <span class="n">D_cross</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_1_np_3</span><span class="p">,</span> <span class="n">b_2_np_3</span><span class="p">)</span>
+        <span class="n">det</span> <span class="o">=</span> <span class="p">(</span><span class="n">D_11</span> <span class="o">*</span> <span class="n">D_22</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">D_cross</span> <span class="o">*</span> <span class="n">D_cross</span><span class="p">)</span>
+
+        <span class="n">beta_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_1_np_3</span><span class="p">,</span> <span class="n">disp_np_3</span><span class="p">)</span>
+        <span class="n">beta_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b_2_np_3</span><span class="p">,</span> <span class="n">disp_np_3</span><span class="p">)</span>
+
+        <span class="n">alpha_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">D_22</span> <span class="o">*</span> <span class="n">beta_1</span> <span class="o">-</span> <span class="n">D_cross</span> <span class="o">*</span> <span class="n">beta_2</span><span class="p">)</span> <span class="o">/</span> <span class="n">det</span>
+
+        <span class="n">alpha_2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">D_cross</span> <span class="o">*</span> <span class="n">beta_1</span> <span class="o">+</span> <span class="n">D_11</span> <span class="o">*</span> <span class="n">beta_2</span><span class="p">)</span> <span class="o">/</span> <span class="n">det</span>
+
+        <span class="k">return</span> <span class="n">alpha_1</span><span class="p">,</span> <span class="n">alpha_2</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

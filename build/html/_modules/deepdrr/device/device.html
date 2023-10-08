@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.device.device &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.device.device</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.device.device</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">import</span> <span class="nn">pyvista</span> <span class="k">as</span> <span class="nn">pv</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">geo</span>
+
+
+<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../../deepdrr.device.html#deepdrr.device.device.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A parent class representing X-ray device interfaces in DeepDRR.</span>
+
+<span class="sd">    To implement a sub class, the following methods/attributes must be implemented:</span>
+<span class="sd">        - device_from_camera3d</span>
+
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sensor_height (int): the height of the sensor in pixels.</span>
+<span class="sd">        sensor_width (int): the width of the sensor in pixels.</span>
+<span class="sd">        pixel_size (float): the size of a pixel in mm.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sensor_height</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">sensor_width</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">pixel_size</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="n">camera_intrinsics</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraIntrinsicTransform</span>
+    <span class="n">source_to_detector_distance</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">world_from_device</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">detector_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Height of the detector in mm.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensor_height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">detector_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Width of the detector in mm.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensor_width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">device_from_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the FrameTransform for the device&#39;s local frame.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            world_transform (FrameTransform): the &quot;world_from_device&quot; frame transformation for the device.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FrameTransform: the &quot;device_from_world&quot; frame transformation for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_device</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">device_from_camera3d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the FrameTransform for the device&#39;s camera3d_from_device frame (in the current pose).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            camera3d_transform (FrameTransform): the &quot;camera3d_from_device&quot; frame transformation for the device.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FrameTransform: the &quot;device_from_camera3d&quot; frame transformation for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">camera3d_from_device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the FrameTransform for the device&#39;s camera3d_from_device frame (in the current pose).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FrameTransform: the &quot;camera3d_from_device&quot; frame transformation for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_camera3d</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">world_from_camera3d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the FrameTransform for the device&#39;s camera3d_from_world frame (in the current pose).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FrameTransform: the &quot;world_from_camera3d&quot; frame transformation for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_device</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_camera3d</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">camera3d_from_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the FrameTransform for the device&#39;s camera3d_from_world frame (in the current pose).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FrameTransform: the &quot;camera3d_from_world&quot; frame transformation for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera3d_from_device</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_world</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">index_from_camera3d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraProjection</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the CameraIntrinsicTransform for the device&#39;s camera3d_from_index frame (in the current pose).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CameraIntrinsicTransform: the &quot;index_from_camera3d&quot; frame transformation for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraProjection</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera_intrinsics</span><span class="p">,</span> <span class="n">geo</span><span class="o">.</span><span class="n">FrameTransform</span><span class="o">.</span><span class="n">identity</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">camera3d_from_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Transform</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_from_camera3d</span><span class="o">.</span><span class="n">inv</span>
+
+<div class="viewcode-block" id="Device.get_camera_projection"><a class="viewcode-back" href="../../../deepdrr.device.html#deepdrr.device.device.Device.get_camera_projection">[docs]</a>    <span class="k">def</span> <span class="nf">get_camera_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraProjection</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the camera projection for the device in the current pose.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CameraProjection: the &quot;index_from_world&quot; camera projection for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraProjection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_intrinsics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera3d_from_world</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">index_from_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraProjection</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the camera projection for the device in the current pose.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CameraProjection: the &quot;index_from_world&quot; camera projection for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_camera_projection</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">world_from_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Transform</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the world_from_index transform for the device in the current pose.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Transform: the &quot;world_from_index&quot; transform for the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_from_world</span><span class="o">.</span><span class="n">inv</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">principle_ray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the principle ray for the device in the current pose in the device frame.</span>
+
+<span class="sd">        The principle ray is the direction of the ray that passes through the center of the</span>
+<span class="sd">        image. It points from the source toward the detector.</span>
+
+<span class="sd">        By default, this is just the z axis, but this can be overridden by sub classes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Vector3D: the principle ray for the device as a unit vector.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">principle_ray_in_camera3d</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_from_camera3d</span> <span class="o">@</span> <span class="n">principle_ray_in_camera3d</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">principle_ray_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the principle ray for the device in the current pose in the world frame.</span>
+
+<span class="sd">        The principle ray is the direction of the ray that passes through the center of the</span>
+<span class="sd">        image. It points from the source toward the detector.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Vector3D: the principle ray for the device as a unit vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">world_from_device</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">principle_ray</span><span class="p">)</span><span class="o">.</span><span class="n">normalized</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">source_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_from_camera3d</span> <span class="o">@</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Device.get_mesh_in_world"><a class="viewcode-back" href="../../../deepdrr.device.html#deepdrr.device.device.Device.get_mesh_in_world">[docs]</a>    <span class="k">def</span> <span class="nf">get_mesh_in_world</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_cached</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a really simple camera mesh for the device in the current pose.</span>
+
+<span class="sd">        Subclasses may want to override this with more detailed meshes (full=True).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># In camera frame</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">geo</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span><span class="p">)</span>
+        <span class="n">cx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensor_height</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">cy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensor_width</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">ul</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="o">-</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span><span class="p">)</span>
+        <span class="n">ur</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span><span class="p">)</span>
+        <span class="n">bl</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="o">-</span><span class="n">cx</span><span class="p">,</span> <span class="o">-</span><span class="n">cy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span><span class="p">)</span>
+        <span class="n">br</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="o">-</span><span class="n">cy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_to_detector_distance</span><span class="p">)</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">ur</span><span class="p">,</span> <span class="n">ul</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">br</span><span class="p">,</span> <span class="n">bl</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">ur</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">ul</span><span class="p">,</span> <span class="n">bl</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ul</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ur</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">bl</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+            <span class="c1"># + pv.Line(c, s) # Line along principle ray</span>
+            <span class="c1"># + pv.Sphere(5, c) # Sphere in center of image.</span>
+        <span class="p">)</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">world_from_camera3d</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mesh</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.projector.scatter &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.projector.scatter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.projector.scatter</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># TODO: cite the papers that form the basis of this code</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">spectral_data</span>
+<span class="kn">from</span> <span class="nn">deepdrr</span> <span class="kn">import</span> <span class="n">geo</span>
+<span class="kn">from</span> <span class="nn">deepdrr</span> <span class="kn">import</span> <span class="n">vol</span>
+<span class="kn">from</span> <span class="nn">.rita</span> <span class="kn">import</span> <span class="n">RITA</span>
+<span class="kn">from</span> <span class="nn">.plane_surface</span> <span class="kn">import</span> <span class="n">PlaneSurface</span>
+
+<span class="kn">from</span> <span class="nn">.mcgpu_mfp_data</span> <span class="kn">import</span> <span class="n">MFP_DATA</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_compton_data</span> <span class="kn">import</span> <span class="n">MAX_NSHELLS</span> <span class="k">as</span> <span class="n">COMPTON_MAX_NSHELLS</span>
+<span class="kn">from</span> <span class="nn">.mcgpu_compton_data</span> <span class="kn">import</span> <span class="n">MATERIAL_NSHELLS</span><span class="p">,</span> <span class="n">COMPTON_DATA</span>
+
+<span class="kn">from</span> <span class="nn">.mcgpu_rita_samplers</span> <span class="kn">import</span> <span class="n">rita_samplers</span>
+
+<span class="kn">import</span> <span class="nn">math</span>  <span class="c1"># for &#39;count_milestones&#39;</span>
+<span class="kn">import</span> <span class="nn">time</span>  <span class="c1"># for keeping track of how long things take</span>
+
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># USEFUL CONSTANTS</span>
+<span class="c1">#</span>
+
+<span class="n">ELECTRON_REST_ENERGY</span> <span class="o">=</span> <span class="mf">510998.918</span>  <span class="c1"># eV</span>
+
+<span class="n">VOXEL_EPSILON</span> <span class="o">=</span> <span class="mf">0.000015</span>
+<span class="n">NEG_VOXEL_EPSILON</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.000015</span>
+
+
+<div class="viewcode-block" id="make_woodcock_mfp"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.make_woodcock_mfp">[docs]</a><span class="k">def</span> <span class="nf">make_woodcock_mfp</span><span class="p">(</span><span class="n">materials</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates and returns a table of [energy, Woodcock MFP] for each energy level, based on the provided materials</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        materials (List[str]): list of material names to generate Woodock MFP data for.  For a list of available materials, reference mcgpu_mfp_data.py</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: a table of [energy, Woodcock MFP] for each applicable energy level</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># See http://serpent.vtt.fi/mediawiki/index.php/Delta-_and_surface-tracking, as well</span>
+    <span class="c1"># as Woodcock et al. (1965) &quot;Techniques Used in the GEM Code...&quot;, section 9.2</span>
+    <span class="c1"># We assume that the volume is homogenous with the largest cross section of all the materials.</span>
+    <span class="c1"># Accordingly, we assume that the mean free path is homogeneous with the shortest mean free</span>
+    <span class="c1"># path of all materials</span>
+
+    <span class="n">mfp_woodcock</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">MFP_DATA</span><span class="p">[</span><span class="s2">&quot;bone&quot;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># the energy tables</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">MFP_DATA</span><span class="p">[</span><span class="n">mat</span><span class="p">][:,</span> <span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">materials</span><span class="p">]),</span>
+        <span class="p">),</span>
+        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">mfp_woodcock</span></div>
+
+
+<div class="viewcode-block" id="simulate_scatter_no_vr"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.simulate_scatter_no_vr">[docs]</a><span class="k">def</span> <span class="nf">simulate_scatter_no_vr</span><span class="p">(</span>
+    <span class="n">volume</span><span class="p">:</span> <span class="n">vol</span><span class="o">.</span><span class="n">Volume</span><span class="p">,</span>
+    <span class="n">source_ijk</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+    <span class="n">rt_kinv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">camera_intrinsics</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraIntrinsicTransform</span><span class="p">,</span>
+    <span class="n">source_to_detector_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">index_from_ijk</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">sensor_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">photon_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">mfp_woodcock</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">spectrum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectral_data</span><span class="o">.</span><span class="n">spectrums</span><span class="p">[</span><span class="s2">&quot;90KV_AL40&quot;</span><span class="p">],</span>
+    <span class="n">E_abs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce a grayscale (intensity-based) image representing the photon scatter during an X-Ray, </span>
+<span class="sd">    without using VR (variance reduction) techniques.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        volume (np.ndarray): the volume density data.</span>
+<span class="sd">        source_ijk (geo.Point3D): the source point for rays in the camera&#39;s IJK space</span>
+<span class="sd">        rt_kinv (np.ndarray): the ray transform for the projection.  Transforms pixel indices (u,v,1) to IJK vector along ray from from the X-Ray source to the detector pixel [u,v].</span>
+<span class="sd">        camera_intrinsics (geo.CameraIntrinsicTransform): the C-Arm &quot;camera&quot; intrinsic transform.  Used to calculate the detector plane.</span>
+<span class="sd">        source_to_detector_distance (float): distance from source to detector in millimeters.</span>
+<span class="sd">        index_from_ijk (np.ndarray): the inverse transformation of ijk_from_index.  Takes 3D IJK coordinates and transforms to 2D pixel coordinates</span>
+<span class="sd">        sensor_size (Tuple[int,int]): the sensor size {width}x{height}, in pixels, of the detector</span>
+<span class="sd">        photon_count (int): the number of photons simulated.</span>
+<span class="sd">        mfp_woodcock (np.ndarray): the Woodcock MFP data for the materials being simulated.  See make_woodock_mfp(...).</span>
+<span class="sd">        spectrum (Optional[np.ndarray], optional): spectrum array.  Defaults to 90KV_AL40 spectrum.</span>
+<span class="sd">        E_abs (Optional[np.float32], optional): the energy (in eV) at or below which photons are assumed to be absorbed by the materials.  Defaults to 5000 (eV).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: deposited-energy image of the photon scatter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">count_milestones</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">photon_count</span><span class="p">))))</span>
+    <span class="p">]</span>  <span class="c1"># [1, 10, 100, ..., 10^7] in default case</span>
+
+    <span class="n">accumulator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sensor_size</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># return accumulator ### for when I don&#39;t really want to do noise stuff</span>
+
+    <span class="n">material_ids</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">material_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat_name</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">material_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="c1"># Convert the volume segmentation data from one-hot to [0..N-1]-labeled</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">volume</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="n">material_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">labeled_seg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ilabel</span> <span class="ow">in</span> <span class="n">material_ids</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">labeled_seg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">labeled_seg</span><span class="p">,</span> <span class="n">ilabel</span> <span class="o">*</span> <span class="n">volume</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="n">material_ids</span><span class="p">[</span><span class="n">ilabel</span><span class="p">]]</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Plane data</span>
+    <span class="n">detector_plane</span> <span class="o">=</span> <span class="n">get_detector_plane</span><span class="p">(</span>
+        <span class="n">rt_kinv</span><span class="p">,</span> <span class="n">camera_intrinsics</span><span class="p">,</span> <span class="n">source_to_detector_distance</span><span class="p">,</span> <span class="n">source_ijk</span><span class="p">,</span> <span class="n">sensor_size</span>
+    <span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;detector plane: </span><span class="si">{</span><span class="n">detector_plane</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1">###</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;volume shape: </span><span class="si">{</span><span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;source_ijk: </span><span class="si">{</span><span class="n">source_ijk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start time: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1">###</span>
+
+    <span class="n">volume_min_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">volume_max_bounds</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">detector_hits</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># counts the number of photons that hit the detector</span>
+    <span class="n">volume_hits</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pixel_hit_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">photon_count</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">count_milestones</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulating photon history </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">photon_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Current time: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">initial_dir</span> <span class="o">=</span> <span class="n">sample_initial_direction</span><span class="p">()</span>
+        <span class="n">hits_volume</span><span class="p">,</span> <span class="n">initial_pos</span> <span class="o">=</span> <span class="n">move_photon_to_volume</span><span class="p">(</span>
+            <span class="n">source_ijk</span><span class="p">,</span> <span class="n">initial_dir</span><span class="p">,</span> <span class="n">volume_min_bounds</span><span class="p">,</span> <span class="n">volume_max_bounds</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hits_volume</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">volume_hits</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">initial_E</span> <span class="o">=</span> <span class="n">sample_initial_energy</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+        <span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">num_scatter_events</span> <span class="o">=</span> <span class="n">track_single_photon_no_vr</span><span class="p">(</span>
+            <span class="n">initial_pos</span><span class="p">,</span>
+            <span class="n">initial_dir</span><span class="p">,</span>
+            <span class="n">initial_E</span><span class="p">,</span>
+            <span class="n">E_abs</span><span class="p">,</span>
+            <span class="n">labeled_seg</span><span class="p">,</span>
+            <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+            <span class="n">detector_plane</span><span class="p">,</span>
+            <span class="n">index_from_ijk</span><span class="p">,</span>
+            <span class="n">source_ijk</span><span class="p">,</span>
+            <span class="n">source_to_detector_distance</span><span class="p">,</span>
+            <span class="n">mfp_woodcock</span><span class="p">,</span>
+            <span class="n">material_ids</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Only keep track of photons that were scattered</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">num_scatter_events</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># else:</span>
+        <span class="c1"># log.debug(f&quot;photon history {i+1} / {photon_count}: {num_scatter_events} scatter events&quot;)</span>
+        <span class="c1"># log.debug(f&quot;\tpixel: [{pixel_x}, {pixel_y}]\n&quot;)</span>
+
+        <span class="c1"># Model for detector: ideal image formation</span>
+        <span class="c1"># Each pixel counts the total energy of the X-rays that enter the pixel (100% efficient pixels)</span>
+        <span class="c1"># NOTE: will have to take care that this sort of tallying is &lt;&lt;&lt;ATOMIC&gt;&gt;&gt; in the GPU</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pixel_x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">pixel_x</span> <span class="o">&gt;=</span> <span class="n">sensor_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pixel_y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">pixel_y</span> <span class="o">&gt;=</span> <span class="n">sensor_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">continue</span>
+        <span class="n">pixel_hit_data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">,</span> <span class="n">initial_E</span><span class="p">,</span> <span class="n">energy</span><span class="p">))</span>
+        <span class="n">accumulator</span><span class="p">[</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">]</span> <span class="o">=</span> <span class="n">accumulator</span><span class="p">[</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">]</span> <span class="o">+</span> <span class="n">energy</span>
+        <span class="n">detector_hits</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Finished simulating </span><span class="si">{</span><span class="n">photon_count</span><span class="si">}</span><span class="s2"> photon histories.  </span><span class="si">{</span><span class="n">detector_hits</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">photon_count</span><span class="si">}</span><span class="s2"> photons hit the detector&quot;</span>
+    <span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;pixel hit data: [pixel_x, pixel_y], initial_energy -&gt; energy&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">pixel_hit_data</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">[</span><span class="si">{</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">], </span><span class="si">{</span><span class="n">tup</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">tup</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1">###return accumulator</span>
+    <span class="k">return</span> <span class="n">accumulator</span><span class="p">,</span> <span class="n">pixel_hit_data</span></div>
+
+
+<div class="viewcode-block" id="track_single_photon_no_vr"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.track_single_photon_no_vr">[docs]</a><span class="k">def</span> <span class="nf">track_single_photon_no_vr</span><span class="p">(</span>
+    <span class="n">initial_pos</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+    <span class="n">initial_dir</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">,</span>
+    <span class="n">initial_E</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+    <span class="n">E_abs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+    <span class="n">labeled_seg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">volume_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">detector_plane</span><span class="p">:</span> <span class="n">PlaneSurface</span><span class="p">,</span>
+    <span class="n">index_from_ijk</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">source_ijk</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+    <span class="n">source_to_detector_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">mfp_woodcock</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">material_ids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce a grayscale (intensity-based) image representing the photon scatter of a single photon</span>
+<span class="sd">    during an X-Ray, without using VR (variance reduction) techniques.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        initial_pos (geo.Point3D): the initial position (in IJK space) of the photon once it has entered the volume.  This IS NOT the X-Ray source.  See function sample_initial_direction(...)</span>
+<span class="sd">        initial_dir (geo.Vector3D): the initial direction of travel of the photon, in IJK space</span>
+<span class="sd">        initital_E (np.float32): the initial energy of the photon</span>
+<span class="sd">        E_abs (np.float32): the energy (in eV) at or below which photons are assumed to be absorbed by the materials.</span>
+<span class="sd">        labeled_seg (np.ndarray): a [0..N-1]-labeled segmentation of the volume</span>
+<span class="sd">        density_vol (np.ndarray): the density information of the volume</span>
+<span class="sd">        detector_plane (np.ndarray): the &#39;plane vector&#39; of the detector</span>
+<span class="sd">        index_from_ijk (np.ndarray): the inverse transformation of ijk_from_index, the ray transform for the projection.</span>
+<span class="sd">        material_ids (Dict[int,str]): a dictionary mapping an integer material ID-label to the name of the material</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[int, int, np.float32, int]: the pixel coord.s of the hit pixel, as well as the energy (in eV) of the photon when it hit the detector.  </span>
+<span class="sd">                                    The final int is the number of scatter events experienced by the photon.</span>
+<span class="sd">                                    Note that the returned pixel coord.s CAN BE out-of-bounds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">initial_pos</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">initial_dir</span>
+
+    <span class="c1"># log.info(f&quot;initial_pos: {initial_pos}&quot;)</span>
+    <span class="c1"># log.info(f&quot;initial_dir: {initial_dir}&quot;)</span>
+
+    <span class="n">photon_energy</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">initial_E</span>  <span class="c1"># tracker variable throughout the duration of the photon history</span>
+    <span class="p">)</span>
+
+    <span class="n">num_scatter_events</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">vox_x</span><span class="p">,</span> <span class="n">vox_y</span><span class="p">,</span> <span class="n">vox_z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># emulate a do-while loop</span>
+        <span class="c1"># Get voxel (index) coord.s.  Keep in mind that IJK coord.s are voxel-centered</span>
+        <span class="n">vox_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># shift because volume&#39;s IJK bounds are [-0.5, {x,y,z}_len - 0.5]</span>
+        <span class="n">vox_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">vox_z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="c1"># log.debug(f&quot;voxel: ({vox_x}, {vox_y}, {vox_z})&quot;)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vox_x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_x</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vox_y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_y</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vox_z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_z</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+            <span class="k">break</span>
+        <span class="c1"># voxel_coords = (vox_x, vox_y, vox_z)</span>
+        <span class="c1"># log.debug(f&quot;INSIDE VOLUME&quot;)</span>
+        <span class="n">mat_label</span> <span class="o">=</span> <span class="n">labeled_seg</span><span class="p">[</span><span class="n">vox_x</span><span class="p">,</span> <span class="n">vox_y</span><span class="p">,</span> <span class="n">vox_z</span><span class="p">]</span>
+        <span class="n">mat_name</span> <span class="o">=</span> <span class="n">material_ids</span><span class="p">[</span><span class="n">mat_label</span><span class="p">]</span>
+
+        <span class="n">mfp_wc</span> <span class="o">=</span> <span class="n">get_woodcock_mfp</span><span class="p">(</span><span class="n">mfp_woodcock</span><span class="p">,</span> <span class="n">photon_energy</span><span class="p">)</span>
+        <span class="c1"># mfp_Ra, mfp_Co, mfp_Tot = get_mfp_data(mfp_data[mat_name], photon_energy)</span>
+
+        <span class="c1"># Delta interactions</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># simulate moving the photon</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">mfp_wc</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sample_U01</span><span class="p">())</span>
+            <span class="p">)</span>  <span class="c1"># multiply by 10 to convert from MFP data (cm) to voxel spacing (mm)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">direction</span><span class="p">))</span>
+
+            <span class="c1"># Check for leaving the volume</span>
+            <span class="n">vox_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># shift because volume&#39;s IJK bounds are [-0.5, {x,y,z}_len - 0.5]</span>
+            <span class="n">vox_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">vox_z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="c1"># log.debug(f&quot;voxel: ({vox_x}, {vox_y}, {vox_z})&quot;)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">vox_x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_x</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">vox_y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_y</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">vox_z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_z</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                <span class="k">break</span>
+
+            <span class="n">mat_label</span> <span class="o">=</span> <span class="n">labeled_seg</span><span class="p">[</span><span class="n">vox_x</span><span class="p">,</span> <span class="n">vox_y</span><span class="p">,</span> <span class="n">vox_z</span><span class="p">]</span>
+            <span class="n">mat_name</span> <span class="o">=</span> <span class="n">material_ids</span><span class="p">[</span><span class="n">mat_label</span><span class="p">]</span>
+
+            <span class="n">mfp_Ra</span><span class="p">,</span> <span class="n">mfp_Co</span><span class="p">,</span> <span class="n">mfp_Tot</span> <span class="o">=</span> <span class="n">get_mfp_data</span><span class="p">(</span><span class="n">MFP_DATA</span><span class="p">[</span><span class="n">mat_name</span><span class="p">],</span> <span class="n">photon_energy</span><span class="p">)</span>
+
+            <span class="c1"># log.debug(f&quot;probability to accept the collision: mfp_wc / mfp_Tot == {mfp_wc / mfp_Tot}&quot;)</span>
+
+            <span class="k">if</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">mfp_wc</span> <span class="o">/</span> <span class="n">mfp_Tot</span><span class="p">:</span>
+                <span class="c1"># Accept the collision.  See http://serpent.vtt.fi/mediawiki/index.php/Delta-_and_surface-tracking</span>
+                <span class="k">break</span>
+            <span class="c1"># log.debug(f&quot;DELTA COLLISION&quot;)</span>
+
+        <span class="c1"># might have left the volume OR had a legitimate interaction</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vox_x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_x</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vox_y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_y</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vox_z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vox_z</span> <span class="o">&gt;=</span> <span class="n">volume_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Now at a legitimate photon interaction</span>
+
+        <span class="c1"># Sample the photon interaction type</span>
+        <span class="c1">#</span>
+        <span class="c1"># (1 / mfp_Tot) * (1 / molecules_per_vol) ==    total interaction cross section =: sigma_Tot</span>
+        <span class="c1"># (1 / mfp_Ra ) * (1 / molecules_per_vol) == Rayleigh interaction cross section =: sigma_Ra</span>
+        <span class="c1"># (1 / mfp_Co ) * (1 / molecules_per_vol) ==  Compton interaction cross section =: sigma_Co</span>
+        <span class="c1">#</span>
+        <span class="c1"># SAMPLING RULE: Let rnd be a uniformly selected number on [0,1]</span>
+        <span class="c1">#</span>
+        <span class="c1"># if rnd &lt; (simga_Co / sigma_Tot): # if rnd &lt; (mfp_Tot / mfp_Co)</span>
+        <span class="c1">#   COMPTON INTERACTION</span>
+        <span class="c1"># elif rnd &lt; (sigma_Ra + sigma_Co) / sigma_Tot: # if rnd &lt; mfp_Tot * ((1 / mfp_Co) + (1 / mfp_Ra))</span>
+        <span class="c1">#   RAYLEIGH INTERACTION</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#   OTHER INTERACTION (photoelectric for pair production) ==&gt; photon absorbed</span>
+        <span class="c1">#</span>
+        <span class="n">cos_theta</span><span class="p">,</span> <span class="n">E_prime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="n">rnd</span> <span class="o">=</span> <span class="n">sample_U01</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">rnd</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">mfp_Tot</span> <span class="o">/</span> <span class="n">mfp_Co</span><span class="p">):</span>
+            <span class="n">cos_theta</span><span class="p">,</span> <span class="n">E_prime</span> <span class="o">=</span> <span class="n">sample_Compton_theta_E_prime</span><span class="p">(</span>
+                <span class="n">photon_energy</span><span class="p">,</span> <span class="n">MATERIAL_NSHELLS</span><span class="p">[</span><span class="n">mat_name</span><span class="p">],</span> <span class="n">COMPTON_DATA</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">rnd</span> <span class="o">&lt;</span> <span class="n">mfp_Tot</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">mfp_Co</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">mfp_Ra</span><span class="p">)):</span>
+            <span class="n">cos_theta</span> <span class="o">=</span> <span class="n">sample_Rayleigh_theta</span><span class="p">(</span><span class="n">photon_energy</span><span class="p">,</span> <span class="n">rita_samplers</span><span class="p">[</span><span class="n">mat_name</span><span class="p">])</span>
+            <span class="n">E_prime</span> <span class="o">=</span> <span class="n">photon_energy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Photoelectric interaction OR pair production.  Photon is absorbed, and thus does not hit the detector.</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">photon_energy</span><span class="p">,</span> <span class="n">num_scatter_events</span>
+
+        <span class="n">photon_energy</span> <span class="o">=</span> <span class="n">E_prime</span>
+        <span class="k">if</span> <span class="n">photon_energy</span> <span class="o">&lt;=</span> <span class="n">E_abs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">photon_energy</span><span class="p">,</span> <span class="n">num_scatter_events</span>
+
+        <span class="n">num_scatter_events</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># log.debug(f&quot;SCATTER EVENT&quot;)</span>
+
+        <span class="n">phi</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sample_U01</span><span class="p">()</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">get_scattered_dir</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">cos_theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+        <span class="c1"># END WHILE</span>
+
+    <span class="c1"># final processing</span>
+
+    <span class="c1"># log.debug(f&quot;pos after leaving volume: {pos}&quot;)</span>
+    <span class="c1"># log.debug(f&quot;dir after leaving volume: {direction}&quot;)</span>
+
+    <span class="c1"># Transport the photon to the detector plane</span>
+    <span class="n">hits_detector_dist</span> <span class="o">=</span> <span class="n">detector_plane</span><span class="o">.</span><span class="n">check_ray_intersection</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+    <span class="c1"># log.debug(f&quot;hits_detector_dist: {hits_detector_dist}&quot;)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">hits_detector_dist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">hits_detector_dist</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="c1"># log.debug(&quot;NO HIT&quot;)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">photon_energy</span><span class="p">,</span> <span class="n">num_scatter_events</span>
+
+    <span class="n">hit</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="p">(</span><span class="n">hits_detector_dist</span> <span class="o">*</span> <span class="n">direction</span><span class="p">))</span>
+
+    <span class="c1"># log.debug(f&quot;hit: {hit}&quot;)</span>
+
+    <span class="c1"># NOTE: an alternative formulation would be to use (rt_kinv).inv == index_from_ijk</span>
+    <span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span> <span class="o">=</span> <span class="n">detector_plane</span><span class="o">.</span><span class="n">get_lin_comb_coefs</span><span class="p">(</span><span class="n">hit</span><span class="p">)</span>
+    <span class="c1"># log.debug(f&quot;old pixel: {pixel_x}, {pixel_y}&quot;)</span>
+
+    <span class="n">hit_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">source_ijk</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">source_to_detector_distance</span>
+    <span class="n">hit_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">source_ijk</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">source_to_detector_distance</span>
+    <span class="n">hit_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">source_ijk</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">source_to_detector_distance</span>
+    <span class="n">pixel_x</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">index_from_ijk</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">hit_x</span>
+        <span class="o">+</span> <span class="n">index_from_ijk</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">hit_y</span>
+        <span class="o">+</span> <span class="n">index_from_ijk</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">hit_z</span>
+    <span class="p">)</span>
+    <span class="n">pixel_y</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">index_from_ijk</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">hit_x</span>
+        <span class="o">+</span> <span class="n">index_from_ijk</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">hit_y</span>
+        <span class="o">+</span> <span class="n">index_from_ijk</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">hit_z</span>
+    <span class="p">)</span>
+
+    <span class="c1"># log.debug(f&quot;new pixel: {pixel_x}, {pixel_y}&quot;)</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pixel_x</span><span class="p">)),</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pixel_y</span><span class="p">)),</span>
+        <span class="n">photon_energy</span><span class="p">,</span>
+        <span class="n">num_scatter_events</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_mfp_data"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.get_mfp_data">[docs]</a><span class="k">def</span> <span class="nf">get_mfp_data</span><span class="p">(</span>
+    <span class="n">table</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Access the Mean Free Path data for the given material&#39;s table at the given photon energy level.</span>
+<span class="sd">    Performs linear interpolation for any energy value that isn&#39;t exactly a table entry.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table (np.ndarray): a table of Mean Free Path data.  See mcgpu_mean_free_path_data directory for examples.</span>
+<span class="sd">        E (np.float32): the energy of the photon</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        np.float32: the Rayleigh scatter mean free path</span>
+<span class="sd">        np.float32: the Compton scatter mean free path</span>
+<span class="sd">        np.float32: the total mean free path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Binary search to find the proper table entry.  Want energy(lo_bin) &lt;= E &lt; energy(hi_bin), with (lo_bin + 1) == hi_bin</span>
+    <span class="n">lo_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># inclusive</span>
+    <span class="n">hi_idx</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># exclusive</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># the index of the bin that we find E in</span>
+
+    <span class="k">while</span> <span class="n">lo_idx</span> <span class="o">&lt;</span> <span class="n">hi_idx</span><span class="p">:</span>
+        <span class="n">mid_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="n">lo_idx</span> <span class="o">+</span> <span class="n">hi_idx</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="n">mid_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="c1"># Need to check lower intervals</span>
+            <span class="n">hi_idx</span> <span class="o">=</span> <span class="n">mid_idx</span>
+        <span class="k">elif</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="n">mid_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="c1"># found correct interval</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">mid_idx</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Need to check higher intervals</span>
+            <span class="n">lo_idx</span> <span class="o">=</span> <span class="n">mid_idx</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">E</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">E</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Linear interpolation for each of the three values</span>
+    <span class="n">delta_E</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">partial</span> <span class="o">=</span> <span class="n">E</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">delta_mfp_Ra</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">delta_mfp_Co</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">delta_mfp_Tot</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+
+    <span class="n">mfp_Ra</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta_mfp_Ra</span> <span class="o">*</span> <span class="n">partial</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_E</span>
+    <span class="n">mfp_Co</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta_mfp_Co</span> <span class="o">*</span> <span class="n">partial</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_E</span>
+    <span class="n">mfp_Tot</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta_mfp_Tot</span> <span class="o">*</span> <span class="n">partial</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_E</span>
+
+    <span class="k">return</span> <span class="n">mfp_Ra</span><span class="p">,</span> <span class="n">mfp_Co</span><span class="p">,</span> <span class="n">mfp_Tot</span></div>
+
+
+<div class="viewcode-block" id="get_woodcock_mfp"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.get_woodcock_mfp">[docs]</a><span class="k">def</span> <span class="nf">get_woodcock_mfp</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Access the Woodcock Mean Free Path at the given photon energy level.</span>
+<span class="sd">    For an explanation of what the Woodcock Mean Free Path is, see mcgpu_mfp_data.py.</span>
+<span class="sd">    Performs linear interpolation for any energy value that isn&#39;t exactly a table entry.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table (np.ndarray): a table of Woodcock Mean Free Path data.  See make_woodcock_mfp(...).</span>
+<span class="sd">        E (np.float32): the energy of the photon</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        np.float32: the inverse of the total majorant cross section.  This returned value has units of centimeters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Binary search to find the proper table entry.  Want energy(lo_bin) &lt;= E &lt; energy(hi_bin), with (lo_bin + 1) == hi_bin</span>
+    <span class="n">lo_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># inclusive</span>
+    <span class="n">hi_idx</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># exclusive</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># the index of the bin that we find E in</span>
+
+    <span class="k">while</span> <span class="n">lo_idx</span> <span class="o">&lt;</span> <span class="n">hi_idx</span><span class="p">:</span>
+        <span class="n">mid_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="n">lo_idx</span> <span class="o">+</span> <span class="n">hi_idx</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="n">mid_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="c1"># Need to check lower intervals</span>
+            <span class="n">hi_idx</span> <span class="o">=</span> <span class="n">mid_idx</span>
+        <span class="k">elif</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="n">mid_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="c1"># found correct interval</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">mid_idx</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Need to check higher intervals</span>
+            <span class="n">lo_idx</span> <span class="o">=</span> <span class="n">mid_idx</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">E</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">E</span> <span class="o">&lt;</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Linear interpolation</span>
+    <span class="n">delta_E</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">partial</span> <span class="o">=</span> <span class="n">E</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">delta_mfp_Tot</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">mfp_wc</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta_mfp_Tot</span> <span class="o">*</span> <span class="n">partial</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_E</span>
+
+    <span class="k">return</span> <span class="n">mfp_wc</span></div>
+
+
+<div class="viewcode-block" id="sample_initial_direction"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.sample_initial_direction">[docs]</a><span class="k">def</span> <span class="nf">sample_initial_direction</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an initial direction vector for a photon, uniformly distributed over the unit sphere.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        geo.Vector3D: the initial direction unit vector (dx, dy, dz)^T</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sample_U01</span><span class="p">()</span>  <span class="c1"># azimuthal angle</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sample_U01</span><span class="p">())</span>  <span class="c1"># polar angle</span>
+
+    <span class="n">sin_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">sin_theta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">sin_theta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">direction</span></div>
+
+
+<div class="viewcode-block" id="move_photon_to_volume"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.move_photon_to_volume">[docs]</a><span class="k">def</span> <span class="nf">move_photon_to_volume</span><span class="p">(</span>
+    <span class="n">pos</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+    <span class="n">direction</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">,</span>
+    <span class="n">volume_min_bounds</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">volume_max_bounds</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transports a photon at the given position, travelling in the given direction, to a rectangular-prism volume of the given bounds.</span>
+<span class="sd">    Assumes the volume&#39;s surfaces are aligned with the major planes of the coordinate system</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pos (geo.Point3D): the initial position of the photon.  Very likely to be the X-ray source.</span>
+<span class="sd">        direction (geo.Vector3D): a unit vector denoting the direction in which the photon is traveling</span>
+<span class="sd">        volume_min_bounds (Tuple[float, float, float]): the minimum coordinate bound for the volume in each direction</span>
+<span class="sd">        volume_max_bounds (Tuple[float, float, float]): the minimum coordinate bound for the volume in each direction</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: whether the photon hits the volume or not</span>
+<span class="sd">        geo.Point3D: where the photon hits the volume if it hits the volume, else the original position</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pos_x</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pos_y</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pos_z</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">dir_x</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dir_y</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dir_z</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">min_x</span> <span class="o">=</span> <span class="n">volume_min_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">min_y</span> <span class="o">=</span> <span class="n">volume_min_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">min_z</span> <span class="o">=</span> <span class="n">volume_min_bounds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">max_x</span> <span class="o">=</span> <span class="n">volume_max_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">max_y</span> <span class="o">=</span> <span class="n">volume_max_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">max_z</span> <span class="o">=</span> <span class="n">volume_max_bounds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">dist_x</span><span class="p">,</span> <span class="n">dist_y</span><span class="p">,</span> <span class="n">dist_z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># x-direction calculations</span>
+    <span class="k">if</span> <span class="n">dir_x</span> <span class="o">&gt;</span> <span class="n">VOXEL_EPSILON</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="n">min_x</span><span class="p">:</span>  <span class="c1"># photon inside or past volume</span>
+            <span class="n">dist_x</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># add VOXEL_EPSILON to make super sure that the photon reaches the volume</span>
+            <span class="n">dist_x</span> <span class="o">=</span> <span class="n">VOXEL_EPSILON</span> <span class="o">+</span> <span class="p">(</span><span class="n">min_x</span> <span class="o">-</span> <span class="n">pos_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">dir_x</span>
+    <span class="k">elif</span> <span class="n">dir_x</span> <span class="o">&lt;</span> <span class="n">NEG_VOXEL_EPSILON</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="n">max_x</span><span class="p">:</span>
+            <span class="n">dist_x</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dist_x</span> <span class="o">=</span> <span class="n">VOXEL_EPSILON</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_x</span> <span class="o">-</span> <span class="n">pos_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">dir_x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dist_x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
+
+    <span class="c1"># y-direction calculations</span>
+    <span class="k">if</span> <span class="n">dir_y</span> <span class="o">&gt;</span> <span class="n">VOXEL_EPSILON</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_y</span> <span class="o">&gt;</span> <span class="n">min_y</span><span class="p">:</span>  <span class="c1"># photon inside or past volume</span>
+            <span class="n">dist_y</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># add VOXEL_EPSILON to make super sure that the photon reaches the volume</span>
+            <span class="n">dist_y</span> <span class="o">=</span> <span class="n">VOXEL_EPSILON</span> <span class="o">+</span> <span class="p">(</span><span class="n">min_y</span> <span class="o">-</span> <span class="n">pos_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">dir_y</span>
+    <span class="k">elif</span> <span class="n">dir_x</span> <span class="o">&lt;</span> <span class="n">NEG_VOXEL_EPSILON</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="n">max_y</span><span class="p">:</span>
+            <span class="n">dist_y</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dist_y</span> <span class="o">=</span> <span class="n">VOXEL_EPSILON</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_y</span> <span class="o">-</span> <span class="n">pos_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">dir_y</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dist_y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
+
+    <span class="c1"># z-direction calculations</span>
+    <span class="k">if</span> <span class="n">dir_z</span> <span class="o">&gt;</span> <span class="n">VOXEL_EPSILON</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_z</span> <span class="o">&gt;</span> <span class="n">min_z</span><span class="p">:</span>  <span class="c1"># photon inside or past volume</span>
+            <span class="n">dist_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># add VOXEL_EPSILON to make super sure that the photon reaches the volume</span>
+            <span class="n">dist_z</span> <span class="o">=</span> <span class="n">VOXEL_EPSILON</span> <span class="o">+</span> <span class="p">(</span><span class="n">min_z</span> <span class="o">-</span> <span class="n">pos_z</span><span class="p">)</span> <span class="o">/</span> <span class="n">dir_z</span>
+    <span class="k">elif</span> <span class="n">dir_z</span> <span class="o">&lt;</span> <span class="n">NEG_VOXEL_EPSILON</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_z</span> <span class="o">&lt;</span> <span class="n">max_z</span><span class="p">:</span>
+            <span class="n">dist_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dist_z</span> <span class="o">=</span> <span class="n">VOXEL_EPSILON</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_z</span> <span class="o">-</span> <span class="n">pos_z</span><span class="p">)</span> <span class="o">/</span> <span class="n">dir_z</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dist_z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">)</span>
+
+    <span class="n">max_dist</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">dist_x</span><span class="p">,</span> <span class="n">dist_y</span><span class="p">,</span> <span class="n">dist_z</span><span class="p">])</span>
+
+    <span class="n">new_pos_x</span> <span class="o">=</span> <span class="n">pos_x</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_dist</span> <span class="o">*</span> <span class="n">dir_x</span><span class="p">)</span>
+    <span class="n">new_pos_y</span> <span class="o">=</span> <span class="n">pos_y</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_dist</span> <span class="o">*</span> <span class="n">dir_y</span><span class="p">)</span>
+    <span class="n">new_pos_z</span> <span class="o">=</span> <span class="n">pos_z</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_dist</span> <span class="o">*</span> <span class="n">dir_z</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">new_pos_x</span> <span class="o">&lt;</span> <span class="n">min_x</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">new_pos_x</span> <span class="o">&gt;</span> <span class="n">max_x</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">new_pos_y</span> <span class="o">&lt;</span> <span class="n">min_y</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">new_pos_y</span> <span class="o">&gt;</span> <span class="n">max_y</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">new_pos_z</span> <span class="o">&lt;</span> <span class="n">min_z</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">new_pos_z</span> <span class="o">&gt;</span> <span class="n">max_z</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_z</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">new_pos_x</span><span class="p">,</span> <span class="n">new_pos_y</span><span class="p">,</span> <span class="n">new_pos_z</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="get_detector_plane"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.get_detector_plane">[docs]</a><span class="k">def</span> <span class="nf">get_detector_plane</span><span class="p">(</span>
+    <span class="n">rt_kinv</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">camera_intrinsics</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraIntrinsicTransform</span><span class="p">,</span>
+    <span class="n">sdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">source_world</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="p">,</span>
+    <span class="n">sensor_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlaneSurface</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the PlaneSurface object of the detector plane in IJK coordinates.</span>
+<span class="sd">    Note that the cosines of the plane&#39;s normal vector (n_x, n_y, n_z) are NOT normalized to be a unit vector.</span>
+
+<span class="sd">    The first basis vector represents moving one pixel ACROSS the image (left to right).</span>
+<span class="sd">    The second basis vector represents moving one pixel DOWN the image (top to bottom).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rt_kinv (np.ndarray): the 3x3 ray transform for the projection.  Transforms pixel indices (u,v,1) to world-space vector along</span>
+<span class="sd">                            the ray from the X-Ray source to the pixel [u,v] on the detector, such that the resulting world-space vector</span>
+<span class="sd">                            has unit projection along the vector pointing from the source to the center of the detector.</span>
+<span class="sd">        camera_intrinsics (geo.CameraIntrinsicTransform): the 3x3 matrix that denotes the camera&#39;s intrinsics.  Canonically represented by K.</span>
+<span class="sd">        sdd (float): the distance from the X-Ray source to the detector.</span>
+<span class="sd">        source_world (geo.Point3D): the world coordinates of the X-Ray source</span>
+<span class="sd">        sensor_size (Tuple[int,int]): the sensor size {width}x{height}, in pixels, of the detector</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        PlaneSurface: a PlaneSurface object representing the detector.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Based off the project_kernel.cu code:</span>
+    <span class="c1">#   Let \hat{p} = (u,v,1)^T be the pixel coord.s on the detector plane</span>
+    <span class="c1">#   Then, the 3D world coord.s of that pixel are related to (R^T K^{-1}) \hat{p} == (rt_kinv) @ \hat{p}</span>
+    <span class="c1">#   Specifically, (rt_kinv) @ \hat{p} is a world vector along the ray from the X-Ray source to the</span>
+    <span class="c1">#   pixel (u,v) on the detector plane.  Since, after investigation, I found that the vector</span>
+    <span class="c1">#   [(rt_kinv) @ (W/2,H/2,1)^T] always has magnitude 1.00000, the vector:</span>
+    <span class="c1">#       SDD * (rt_kinv) @ (u,v,1)^T</span>
+    <span class="c1">#   points from the X-Ray source to the pixel (u,v) on the detector plane, where SDD is the</span>
+    <span class="c1">#   source-to-detector distance.</span>
+    <span class="c1">#</span>
+    <span class="c1"># We calculate the normal vector of the detector plane in world-space by using the three-point method:</span>
+    <span class="c1">#   1. Let {p1, p2, p3} be three pixel coordinates of the form (u, v, 1)^T</span>
+    <span class="c1">#   2. Three coplanar points in world coordinates are r1 := SDD * (rt_kinv) @ p1, r2 := SDD * (rt_kinv) @ p2,</span>
+    <span class="c1">#      r3 := SDD * (rt_kinv) @ p3</span>
+    <span class="c1">#   3. Compute two vectors that are -in- the plane: v1 := r2 - r1, v2 := r3 - r1</span>
+    <span class="c1">#   4. The cross product v := v1 x v2 is perpendicular to both v1 and v2.  Thus, v is a normal vector to the plane</span>
+    <span class="c1">#</span>
+    <span class="c1"># Note that even though {r1, r2, r3} are technically the vectors points from the X-ray source to the detector plane,</span>
+    <span class="c1"># not pointing from the world origin to the detector plane, the fact that {v1, v2} are [relative displacement vectors]</span>
+    <span class="c1"># means that the shift in &quot;origin&quot; for {r1, r2, r3} has no effect on calculating the normal vector for the detector plane.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Simplifying the math to reduce the number of arithmetic steps:</span>
+    <span class="c1">#   v1 = r2 - r1 = SDD * (rt_kinv) @ p2 - SDD * (rt_kinv) @ p1 = SDD * (rt_kinv) @ (p2 - p1)</span>
+    <span class="c1">#   v2 = r3 - r1 = SDD * (rt_kinv) @ p3 - SDD * (rt_kinv) @ p1 = SDD * (rt_kinv) @ (p3 - p1)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Choosing easy p_i&#39;s of: p1 = (0, 0, 1)^T, p2 = (1, 0, 1)^T, p3 = (0, 1, 1)^T, we get:</span>
+    <span class="c1">#   v1 = SDD * (rt_kinv) @ (1, 0, 0)^T = SDD * [first column of rt_kinv]  // corresponds to moving 1 pixel over in x-direction (x increases)</span>
+    <span class="c1">#   v2 = SDD * (rt_kinv) @ (0, 1, 0)^T = SDD * [second column of rt_kinv] // corresponds to moving 1 pixel down in y-direction (y increases)</span>
+    <span class="c1">#</span>
+    <span class="c1"># To reduce the number of characters, let M: = (rt_kinv), as a 9-element row-major ordering of the 3x3 (rt_kinv).</span>
+    <span class="c1">#   v := v1 x v2 = [SDD * (M[0], M[3], M[6])^T] x [SDD * (M[1], M[4], M[7])^T]</span>
+    <span class="c1">#       = (SDD * SDD) * [(M[0], M[3], M[6])^T x (M[1], M[4], M[7])^T]</span>
+    <span class="c1">#       = SDD * SDD * (</span>
+    <span class="c1">#           M[3] * M[7] - M[6] * M[4],</span>
+    <span class="c1">#           M[6] * M[1] - M[0] * M[7],</span>
+    <span class="c1">#           M[0] * M[4] - M[3] * M[1]</span>
+    <span class="c1">#         )^T</span>
+    <span class="c1">#       = SDD * SDD* (</span>
+    <span class="c1">#           rt_kinv[1,0] * rt_kinv[2,1] - rt_kinv[2,0] * rt_kinv[1,1],</span>
+    <span class="c1">#           rt_kinv[2,0] * rt_kinv[0,1] - rt_kinv[0,0] * rt_kinv[2,1],</span>
+    <span class="c1">#           rt_kinv[0,0] * rt_kinv[1,1] - rt_kinv[1,0] * rt_kinv[0,1]</span>
+    <span class="c1">#         )^T</span>
+    <span class="c1">#</span>
+    <span class="c1"># Once we have the normal vector, we need the minimum distance between the detector plane and</span>
+    <span class="c1"># the origin of the world coord.s to get the fourth entry in the &#39;plane vector&#39; (n_x, n_y, n_z, d)</span>
+    <span class="c1">#</span>
+    <span class="n">sdd_sq</span> <span class="o">=</span> <span class="n">sdd</span> <span class="o">*</span> <span class="n">sdd</span>
+
+    <span class="c1"># Normal vector to the detector plane:</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">sdd_sq</span> <span class="o">*</span> <span class="p">(</span><span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">sdd_sq</span> <span class="o">*</span> <span class="p">(</span><span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">nz</span> <span class="o">=</span> <span class="n">sdd_sq</span> <span class="o">*</span> <span class="p">(</span><span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">n_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">nx</span> <span class="o">*</span> <span class="n">nx</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">ny</span> <span class="o">*</span> <span class="n">ny</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">nz</span> <span class="o">*</span> <span class="n">nz</span><span class="p">))</span>
+
+    <span class="n">nx</span> <span class="o">/=</span> <span class="n">n_mag</span>
+    <span class="n">ny</span> <span class="o">/=</span> <span class="n">n_mag</span>
+    <span class="n">nz</span> <span class="o">/=</span> <span class="n">n_mag</span>
+
+    <span class="c1"># The &#39;surface origin&#39; corresponds to the pixel [0,0] on the detector.</span>
+    <span class="c1"># Vector source_to_surf_ori = SDD * (rt_kinv) @ (0,0,1)^T = SDD * [third column of rt_kinv]</span>
+    <span class="n">surf_ori_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">sdd</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">source_world</span><span class="o">.</span><span class="n">data</span><span class="p">[</span>
+        <span class="mi">0</span>
+    <span class="p">]</span>  <span class="c1"># source_to_surf_ori + origin_to_source == origin_to_surf_ori</span>
+    <span class="n">surf_ori_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">sdd</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">source_world</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">surf_ori_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">sdd</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">source_world</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="c1"># SANITY CHECK: after using an inverse-of-upper-triangular-matrix formula, we get:</span>
+    <span class="c1"># kinv[2] == (s c_y - c_x f_y) / (f_x f_y)</span>
+    <span class="c1"># kinv[5] == c_y / f_y</span>
+    <span class="c1"># kinv[8] == 1</span>
+    <span class="n">surface_origin</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Point3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">surf_ori_x</span><span class="p">,</span> <span class="n">surf_ori_y</span><span class="p">,</span> <span class="n">surf_ori_z</span><span class="p">])</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Distance from the detector plane to the origin</span>
+    <span class="c1">#</span>
+    <span class="c1"># Time for a diagram.</span>
+    <span class="c1">#</span>
+    <span class="c1">#       |   plane parallel to detector plane</span>
+    <span class="c1">#       |             v</span>
+    <span class="c1">#       |             |</span>
+    <span class="c1">#     X |  -----_____ |</span>
+    <span class="c1">#       |            -O---_____</span>
+    <span class="c1">#       |             |        -----_____</span>
+    <span class="c1">#     C | ------------P-----------------------  S</span>
+    <span class="c1">#       |             |</span>
+    <span class="c1">#       |             |</span>
+    <span class="c1">#       |</span>
+    <span class="c1">#       ^</span>
+    <span class="c1"># detector plane</span>
+    <span class="c1">#</span>
+    <span class="c1"># Points:</span>
+    <span class="c1">#   - S is the SOURCE of the X-rays</span>
+    <span class="c1">#   - O is the ORIGIN of the volume</span>
+    <span class="c1">#   - C is the CENTER of the detector</span>
+    <span class="c1">#   - X is the point where the ray from S to O intersects the detector plane</span>
+    <span class="c1">#   - P is a point along the ray from S to C such that triangle SPO is similar to triangle SCX</span>
+    <span class="c1">#</span>
+    <span class="c1"># Vector SC is always perpendicular to the detector plane.</span>
+    <span class="c1">#</span>
+    <span class="c1"># The shortest distance between the detector plane and the origin O is the magnitude of a vector</span>
+    <span class="c1"># from O to the dectector plane, where that vector from O is perpendicular to the detector plane.</span>
+    <span class="c1"># Thus,</span>
+    <span class="c1">#</span>
+    <span class="c1">#   d = magnitude(projection of OX onto SC)</span>
+    <span class="c1">#     = magnitude(SC * (OX \cdot SC) / (magnitude(SC)^2))</span>
+    <span class="c1">#     = magnitude(SC) * (OX \cdot SC) / (magnitude(SC)^2)</span>
+    <span class="c1">#     = (OX \cdot SC) / magnitude(SC)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Vector SC can be found by finding the world coordinates of the detector center (vector OC) and</span>
+    <span class="c1"># the world coordinates of the X-ray source (vector OS).  SC = OC - OS</span>
+    <span class="c1">#</span>
+    <span class="c1"># Vector SP = projection of SO onto SC</span>
+    <span class="c1">#           = SC * (SO \cdot SC) / (magnitude(SC)^2)</span>
+    <span class="c1"># magnitude(SP) = (SO \cdot SC) / magnitude(SC)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Vector SX = SO * magnitude(SC) / magnitude(SP) = SO * (SC \cdot SC) / (SO \cdot SC)</span>
+    <span class="c1"># Vector OX = SX - SO</span>
+    <span class="c1">#           = SO * ([(SC \cdot SC) / (SO \cdot SC)] - 1)</span>
+    <span class="c1">#           = OS * (-1) * ([(SC \cdot SC) / ((-1) OS \cdot SC)] - 1)</span>
+    <span class="c1">#           = OS * ([(SC \cdot SC) / (OS \cdot SC)] + 1)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Once we know vector OX, we can plug it into the above formula for &#39;d&#39;.</span>
+    <span class="c1">#</span>
+    <span class="c1"># d = (OX \cdot SC) / magnitude(SC)</span>
+    <span class="c1">#   = ({OS * ([(SC \cdot SC) / (OS \cdot SC)] + 1)} \cdot SC) / magnitude(SC)</span>
+    <span class="c1">#   = ([(SC \cdot SC) / (OS \cdot SC)] + 1) * (OS \cdot SC) / magnitude(SC)</span>
+    <span class="c1">#   = magnitude(SC) + [(SC \cdot OS) / magitude(SC)]</span>
+    <span class="c1">#   = magnitude(SC) * [1 + (SC \cdot OS) / (SC \cdot SC)]</span>
+    <span class="c1">#</span>
+    <span class="n">cu</span> <span class="o">=</span> <span class="n">sensor_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># pixel coord.s of the center of the detector</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">sensor_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="c1"># world coord.s of the SC, the ray from the X-Ray source S to the center C of the detector</span>
+    <span class="n">sc_x</span> <span class="o">=</span> <span class="n">sdd</span> <span class="o">*</span> <span class="p">(</span><span class="n">cu</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cv</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">sc_y</span> <span class="o">=</span> <span class="n">sdd</span> <span class="o">*</span> <span class="p">(</span><span class="n">cu</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cv</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">sc_z</span> <span class="o">=</span> <span class="n">sdd</span> <span class="o">*</span> <span class="p">(</span><span class="n">cu</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cv</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rt_kinv</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+    <span class="c1"># Note that the world coord.s of vector OS are contained in source_world, which is obtained</span>
+    <span class="c1"># by calling the camera_center_in_volume method</span>
+    <span class="n">sc_dot_sc</span> <span class="o">=</span> <span class="p">(</span><span class="n">sc_x</span> <span class="o">*</span> <span class="n">sc_x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sc_y</span> <span class="o">*</span> <span class="n">sc_y</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sc_z</span> <span class="o">*</span> <span class="n">sc_z</span><span class="p">)</span>
+    <span class="n">sc_dot_os</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">sc_x</span> <span class="o">*</span> <span class="n">source_world</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">sc_y</span> <span class="o">*</span> <span class="n">source_world</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">sc_z</span> <span class="o">*</span> <span class="n">source_world</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="p">)</span>
+
+    <span class="c1"># the distance to the detector from the origin -- the absolute value is important!</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sc_dot_sc</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">sc_dot_os</span> <span class="o">/</span> <span class="n">sc_dot_sc</span><span class="p">)))</span>
+
+    <span class="c1"># The normal vector (nx,ny,nz)^T points either:</span>
+    <span class="c1">#   1) from the detector plane TOWARD the origin</span>
+    <span class="c1">#   2) from the detector plane AWAY from the origin</span>
+    <span class="c1">#</span>
+    <span class="c1"># If the normal vector points TOWARD the origin, then the plane equation is:</span>
+    <span class="c1">#   [position] \cdot [normal vector] + [distance to detector] = 0,</span>
+    <span class="c1"># which suggests that the fourth component of the &#39;plane vector&#39; should be positive.</span>
+    <span class="c1">#</span>
+    <span class="c1"># If the normal vector points AWAY from the origin, then the plane equation is:</span>
+    <span class="c1">#   [position] \cdot [normal vector] - [distance to detector] = 0,</span>
+    <span class="c1"># which suggests that the fourth component of the &#39;plane vector&#39; should be negative.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Suppose we are viewing the principal axis of the C-Arm (the line that goes from the source</span>
+    <span class="c1"># and hits the center of the detector at a perpendicular angle) such that the detector is on</span>
+    <span class="c1"># the left and the source is on the right:</span>
+    <span class="c1">#</span>
+    <span class="c1">#      detector plane</span>
+    <span class="c1">#          v                                 plane perpendicular to source</span>
+    <span class="c1">#          |                                              v</span>
+    <span class="c1">#          |                                              |</span>
+    <span class="c1">#          |             principal axis                   |</span>
+    <span class="c1">#          |                   v                          |</span>
+    <span class="c1">#        C |--------------------------------------------- @ S (source)</span>
+    <span class="c1">#          |                                              |</span>
+    <span class="c1">#          |                                              |</span>
+    <span class="c1">#          |                                              |</span>
+    <span class="c1">#          |</span>
+    <span class="c1">#</span>
+    <span class="c1"># There are five cases. Let P be the point resulting from projecting the origin onto the</span>
+    <span class="c1"># line from S to C -- {S,C,P} are three collinear points.  This point P is the same as from</span>
+    <span class="c1"># the above explanation from determining the origin-to-plane distance.</span>
+    <span class="c1">#   1. C between P and S.  Use the [-d] equation iff SC and \hat{n} are opposite directions.</span>
+    <span class="c1">#   2. P coincides with C.  d == (-d) == 0, so nothing needs to happen.</span>
+    <span class="c1">#   3. P between C and S.  Use the [-d] equation iff SC and \hat{n} are the same direction.</span>
+    <span class="c1">#   4. P coincides with S.  Use the [-d] equation iff SC and \hat{n} are the same direction.</span>
+    <span class="c1">#   5. S between C and P.  Use the [-d] equation iff SC and \hat{n} are the same direction.</span>
+    <span class="c1">#</span>
+    <span class="c1"># However, these cases can be re-parameterized by SC and SP:</span>
+    <span class="c1">#   1. [(SC dot SP) &gt; 0] and [mag(SP) &gt; mag(SC)]</span>
+    <span class="c1">#   2. [(SC dot SP) &gt; 0] and [mag(SP) = mag(SC)]</span>
+    <span class="c1">#   3. [(SC dot SP) &gt; 0] and [mag(SP) &lt; mag(SC)]</span>
+    <span class="c1">#   4. [(SC dot SP) = 0]</span>
+    <span class="c1">#   5. [(SC dot SP) &lt; 0]</span>
+    <span class="c1">#</span>
+    <span class="c1"># However, since we have already calculated (SC dot OS) previously, we note that (SC dot SP)</span>
+    <span class="c1"># is equivalent to [-1 * (SC dot OS)].  Addtionally, we note that magnitude comparisons are</span>
+    <span class="c1"># the same if we compare the magnitude-squared, and:</span>
+    <span class="c1">#   [magnitude(SP)^2] == [magnitude(-1 * SC * (SC dot OS) / (SC dot SC))^2]</span>
+    <span class="c1">#                     == (SC dot OS)^2 / (SC dot SC)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Re-parameterizing again, we get:</span>
+    <span class="c1">#   1. [(SC dot OS) &lt; 0] and [(SC dot OS)^2 / (SC dot SC) &gt; (SC dot SC)]</span>
+    <span class="c1">#   2. [(SC dot OS) &lt; 0] and [(SC dot OS)^2 / (SC dot SC) = (SC dot SC)]</span>
+    <span class="c1">#   3. [(SC dot OS) &lt; 0] and [(SC dot OS)^2 / (SC dot SC) &lt; (SC dot SC)]</span>
+    <span class="c1">#   4. [(SC dot OS) = 0]</span>
+    <span class="c1">#   5. [(SC dot OS) &gt; 0]</span>
+    <span class="c1"># Simplifying:</span>
+    <span class="c1">#   1. [(SC dot OS) &lt; 0] and [ABS(SC dot OS) &gt; (SC dot SC)]</span>
+    <span class="c1">#   2. [(SC dot OS) &lt; 0] and [ABS(SC dot OS) = (SC dot SC)]</span>
+    <span class="c1">#   3. [(SC dot OS) &lt; 0] and [ABS(SC dot OS) &lt; (SC dot SC)]</span>
+    <span class="c1">#   4. [(SC dot OS) = 0]</span>
+    <span class="c1">#   5. [(SC dot OS) &gt; 0]</span>
+    <span class="c1"># where ABS(...) is the absolute value function.</span>
+    <span class="c1">#</span>
+    <span class="c1"># For the actual implementation, we recall that Case 1 has one behavior, while Cases 2-5 share</span>
+    <span class="c1"># the other behavior.</span>
+    <span class="c1">#</span>
+    <span class="n">sc_dot_normal</span> <span class="o">=</span> <span class="p">(</span><span class="n">sc_x</span> <span class="o">*</span> <span class="n">nx</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sc_y</span> <span class="o">*</span> <span class="n">ny</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sc_z</span> <span class="o">*</span> <span class="n">nz</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">sc_dot_os</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="p">(</span><span class="o">-</span><span class="n">sc_dot_os</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sc_dot_sc</span>
+    <span class="p">):</span>  <span class="c1"># Uses ABS(sc_dot_os) == -sc_dot_os</span>
+        <span class="c1"># CASE 1.  Use [-d] equation iff SC and \hat{n} are opposite directions</span>
+        <span class="k">if</span> <span class="n">sc_dot_normal</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="o">-</span><span class="n">d</span>  <span class="c1"># d was previously necessarily positive semidefinite</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># CASES 2,3,4,5.  Use the [-d] equation iff SC and \hat{n} are the same direction.</span>
+        <span class="k">if</span> <span class="n">sc_dot_normal</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="o">-</span><span class="n">d</span>  <span class="c1"># d was previously necessarily positive semidefinite</span>
+
+    <span class="n">plane_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+
+    <span class="c1"># The basis is {v1, v2}, where {v1, v2} are the vectors described in the &quot;choosing easy p_i&#39;s&quot; section</span>
+    <span class="c1"># That way, the point of intersection is:</span>
+    <span class="c1">#</span>
+    <span class="c1">#   intersection = surface_origin + (pixel_x_value) * v1 + (pixel_y_value) * v2</span>
+    <span class="c1">#</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">sdd</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">sdd</span> <span class="o">*</span> <span class="n">rt_kinv</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Coordinate bounds correspond to the size of the detector, in pixels</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sensor_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sensor_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+
+    <span class="c1"># Determine whether or not the basis vectors are orthogonal</span>
+    <span class="c1">#</span>
+    <span class="c1"># v1 = SDD * (rt_kinv) @ (1,0,0)^T = SDD * [R^T] @ [K.inv] @ (1,0,0)^T</span>
+    <span class="c1"># v2 = SDD * (rt_kinv) @ (0,1,0)^T = SDD * [R^T] @ [K.inv] @ (0,1,0)^T</span>
+    <span class="c1">#</span>
+    <span class="c1">#     [f_x  s  c_x]                     [1/f_x -s/(f_x f_y)  ...]</span>
+    <span class="c1"># K = [ 0  f_y c_y]     ==&gt;    K^{-1} = [  0       1/f_y     ...]</span>
+    <span class="c1">#     [ 0   0   1 ]                     [  0         0        1 ]</span>
+    <span class="c1">#</span>
+    <span class="c1"># where the &quot;...&quot; in the third column are left incomplete because the</span>
+    <span class="c1"># calculation does not involve the third column of K^{-1}.</span>
+    <span class="c1">#</span>
+    <span class="c1"># (v1)^T (v2) = [SDD * [R^T] @ [K.inv] @ (1,0,0)^T]^T [SDD * [R^T] @ [K.inv] @ (0,1,0)^T]</span>
+    <span class="c1">#             = (SDD^2) * [K.inv @ (1,0,0)^T]^T @ R @ R^T @ [K.inv @ (0,1,0)^T]</span>
+    <span class="c1">#             = (SDD^2) * [K.inv @ (1,0,0)^T]^T @ [K.inv @ (0,1,0)^T]</span>
+    <span class="c1">#             = (SDD^2) * (1/f_x, 0, 0)^T @ (-s/(f_x f_y), 1/f_y, 0)</span>
+    <span class="c1">#             = (SDD^2) * (-s / (f_x f_x f_y))</span>
+    <span class="c1">#</span>
+    <span class="c1"># Thus, {v1,v2} are orthogonal iff &#39;s&#39;, the pixel shear, is zero.</span>
+    <span class="c1">#</span>
+    <span class="n">shear</span> <span class="o">=</span> <span class="n">camera_intrinsics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">PlaneSurface</span><span class="p">(</span><span class="n">plane_vector</span><span class="p">,</span> <span class="n">surface_origin</span><span class="p">,</span> <span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">),</span> <span class="n">bounds</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">shear</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_scattered_dir"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.get_scattered_dir">[docs]</a><span class="k">def</span> <span class="nf">get_scattered_dir</span><span class="p">(</span>
+    <span class="n">direction</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">,</span> <span class="n">cos_theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine the new direction of travel after getting scattered</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dir (geo.Vector3D): the incoming direction of travel</span>
+<span class="sd">        cos_theta (np.float32): the cosine of the polar scattering angle, i.e. the angle dir and dir_prime</span>
+<span class="sd">        phi (np.float32): the azimuthal angle, i.e. how dir_prime is rotated about the axis &#39;dir&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        geo.Vector3D: the outgoing direction of travel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># since \theta is restricted to [0, \pi], sin_theta is restricted to [0,1]</span>
+    <span class="n">sin_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">cos_theta</span> <span class="o">*</span> <span class="n">cos_theta</span><span class="p">)</span>
+    <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dz</span> <span class="o">*</span> <span class="n">dz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tmp</span> <span class="o">&lt;</span> <span class="mf">0.000001</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In get_scattered_dir(...)&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">input direction: (</span><span class="si">{</span><span class="n">dx</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">dy</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">dz</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;1 - dz*dz = </span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2"> &lt; 0.000001&quot;</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="mf">0.0000001</span>
+
+    <span class="c1"># See PENELOPE-2006 Eqn 1.131</span>
+    <span class="n">new_dx</span> <span class="o">=</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">cos_theta</span> <span class="o">+</span> <span class="n">sin_theta</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dz</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">-</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">sin_phi</span><span class="p">)</span> <span class="o">/</span> <span class="n">tmp</span>
+    <span class="n">new_dy</span> <span class="o">=</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">cos_theta</span> <span class="o">+</span> <span class="n">sin_theta</span> <span class="o">*</span> <span class="p">(</span><span class="n">dy</span> <span class="o">*</span> <span class="n">dz</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">-</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">sin_phi</span><span class="p">)</span> <span class="o">/</span> <span class="n">tmp</span>
+    <span class="n">new_dz</span> <span class="o">=</span> <span class="n">dz</span> <span class="o">*</span> <span class="n">cos_theta</span> <span class="o">-</span> <span class="n">tmp</span> <span class="o">*</span> <span class="n">sin_theta</span> <span class="o">*</span> <span class="n">cos_phi</span>
+
+    <span class="c1"># Normalize the new direction vector</span>
+    <span class="n">new_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">new_dx</span> <span class="o">*</span> <span class="n">new_dx</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">new_dy</span> <span class="o">*</span> <span class="n">new_dy</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">new_dz</span> <span class="o">*</span> <span class="n">new_dz</span><span class="p">))</span>
+
+    <span class="n">new_dx</span> <span class="o">=</span> <span class="n">new_dx</span> <span class="o">/</span> <span class="n">new_mag</span>
+    <span class="n">new_dy</span> <span class="o">=</span> <span class="n">new_dy</span> <span class="o">/</span> <span class="n">new_mag</span>
+    <span class="n">new_dz</span> <span class="o">=</span> <span class="n">new_dz</span> <span class="o">/</span> <span class="n">new_mag</span>
+
+    <span class="k">return</span> <span class="n">geo</span><span class="o">.</span><span class="n">Vector3D</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">new_dx</span><span class="p">,</span> <span class="n">new_dy</span><span class="p">,</span> <span class="n">new_dz</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="sample_U01"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.sample_U01">[docs]</a><span class="k">def</span> <span class="nf">sample_U01</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a value uniformly sampled from the interval [0,1]&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: implement RANECU? Could be useful for validating translation to CUDA</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="sample_initial_energy"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.sample_initial_energy">[docs]</a><span class="k">def</span> <span class="nf">sample_initial_energy</span><span class="p">(</span><span class="n">spectrum</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine the energy (in eV) of a photon emitted by an X-Ray source with the given spectrum</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spectrum (np.ndarray): the data associated with the spectrum.  Cross-reference spectral_data.py</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        np.float32: the energy of a photon, in eV</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">*</span> <span class="n">total_count</span>
+    <span class="n">accumulator</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">accumulator</span> <span class="o">=</span> <span class="n">accumulator</span> <span class="o">+</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">accumulator</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># If threshold hasn&#39;t been reached yet, we must have sampled the highest energy level</span>
+    <span class="k">return</span> <span class="n">spectrum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="sample_Rayleigh_theta"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.sample_Rayleigh_theta">[docs]</a><span class="k">def</span> <span class="nf">sample_Rayleigh_theta</span><span class="p">(</span>
+    <span class="n">photon_energy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">rayleigh_sampler</span><span class="p">:</span> <span class="n">RITA</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly sample values of theta for a given Rayleigh scatter interaction</span>
+<span class="sd">    Based on page 49 of paper &#39;PENELOPE-2006: A Code System for Monte Carlo Simulation of Electron and Photon Transport&#39;</span>
+
+<span class="sd">    Note that the materials files distributed with MC-GPU_v1.3 (https://code.google.com/archive/p/mcgpu/downloads) uses</span>
+<span class="sd">    Form Factor data from PENELOPE-2006 files.  Accordingly, the (unnormalized) PDF is factored as:</span>
+<span class="sd">            p_{Ra}(\\cos \\theta) = g(\\cos \\theta)[F(x,Z)]^2</span>
+<span class="sd">    not</span>
+<span class="sd">            p_{Ra}(\\cos \\theta) = g(\\cos \\theta)[F(q,Z)]^2</span>
+<span class="sd">    Accordingly, we compute cos(theta) using the x-values, not the q-values</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        photon_energy (np.float32): the energy of the incoming photon</span>
+<span class="sd">        rayleigh_sampler (RITA): the RITA sampler object for the material at the location of the interaction</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.float32: cos(theta), where theta is the polar scattering angle </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">photon_energy</span> <span class="o">/</span> <span class="n">ELECTRON_REST_ENERGY</span>
+    <span class="c1"># Sample a random value of x^2 from the distribution pi(x^2), restricted to the interval (0, x_{max}^2)</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="mf">20.6074</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kappa</span>
+    <span class="n">x_max2</span> <span class="o">=</span> <span class="n">x_max</span> <span class="o">*</span> <span class="n">x_max</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">rayleigh_sampler</span><span class="o">.</span><span class="n">sample_rita</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">x2</span> <span class="o">&gt;</span> <span class="n">x_max2</span><span class="p">:</span>
+        <span class="c1"># Resample until x^2 is in the interval (0, x_{max}^2)</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">rayleigh_sampler</span><span class="o">.</span><span class="n">sample_rita</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Set cos_theta</span>
+        <span class="n">cos_theta</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">/</span> <span class="n">x_max2</span><span class="p">)</span>
+
+        <span class="c1"># Test cost_theta</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cos_theta</span> <span class="o">*</span> <span class="n">cos_theta</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">g</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">cos_theta</span></div>
+
+
+<div class="viewcode-block" id="sample_Compton_theta_E_prime"><a class="viewcode-back" href="../../../deepdrr.projector.html#deepdrr.projector.scatter.sample_Compton_theta_E_prime">[docs]</a><span class="k">def</span> <span class="nf">sample_Compton_theta_E_prime</span><span class="p">(</span>
+    <span class="n">photon_energy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">mat_nshells</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">mat_compton_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly sample values of theta and W for a given Compton scatter interaction</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        photon_energy (np.float32): the energy of the incoming photon</span>
+<span class="sd">        mat_nshells (np.int32): the number of electron shells in the material being interacted with</span>
+<span class="sd">        mat_compton_data (np.ndarray): the Compton scatter data for the material being interacted with.  See mcgpu_compton_data.py for more details </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.float32: cos_theta, the polar scattering angle </span>
+<span class="sd">        np.float32: E_prime, the energy of the outgoing photon</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">photon_energy</span> <span class="o">/</span> <span class="n">ELECTRON_REST_ENERGY</span>
+
+    <span class="n">a_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
+    <span class="n">one_p2k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kappa</span>
+    <span class="n">a_2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">kappa</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">one_p2k</span> <span class="o">*</span> <span class="n">one_p2k</span><span class="p">)</span>
+
+    <span class="n">tau_min</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">one_p2k</span>
+
+    <span class="c1">### Sample cos_theta</span>
+
+    <span class="c1"># Compute S(E, \theta=\pi) here, since it does not depend on cos_theta</span>
+    <span class="n">s_pi</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mat_nshells</span><span class="p">):</span>
+        <span class="n">U_i</span> <span class="o">=</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">photon_energy</span> <span class="o">&gt;</span> <span class="n">U_i</span><span class="p">:</span>  <span class="c1"># this serves as the Heaviside function</span>
+            <span class="n">left_term</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">photon_energy</span> <span class="o">*</span> <span class="p">(</span><span class="n">photon_energy</span> <span class="o">-</span> <span class="n">U_i</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="p">)</span>  <span class="c1"># since (1 - \cos(\theta=\pi)) == 2</span>
+            <span class="n">p_i_max</span> <span class="o">=</span> <span class="p">(</span><span class="n">left_term</span> <span class="o">-</span> <span class="n">ELECTRON_REST_ENERGY</span> <span class="o">*</span> <span class="n">U_i</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">ELECTRON_REST_ENERGY</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">left_term</span> <span class="o">+</span> <span class="n">U_i</span> <span class="o">*</span> <span class="n">U_i</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Use several steps to calculate n_{i}(p_{i,max})</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">p_i_max</span>  <span class="c1"># J_{i,0} p_{i,max}</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tmp</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">p_i_max</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">exponent</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tmp</span> <span class="o">*</span> <span class="n">tmp</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p_i_max</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">tmp</span>
+            <span class="c1"># &#39;tmp&#39; now holds n_{i}(p_{i,max})</span>
+
+            <span class="n">s_pi</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">s_pi</span> <span class="o">+</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span>
+            <span class="p">)</span>  <span class="c1"># Equivalent to: s_pi += f_{i} n_{i}(p_{i,max})</span>
+    <span class="c1"># s_pi is now set</span>
+
+    <span class="n">cos_theta</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># local storage for the results of calculating n_{i}(p_{i,max})</span>
+    <span class="n">n_p_i_max_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">COMPTON_MAX_NSHELLS</span><span class="p">)]</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># emulate do-while loop</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="k">if</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">a_1</span> <span class="o">/</span> <span class="p">(</span><span class="n">a_1</span> <span class="o">+</span> <span class="n">a_2</span><span class="p">))</span> <span class="k">else</span> <span class="mi">2</span>
+        <span class="p">)</span>  <span class="c1"># in CUDA code, we will be able to avoid using a variable to store i</span>
+        <span class="n">trnd</span> <span class="o">=</span> <span class="n">sample_U01</span><span class="p">()</span>  <span class="c1"># random number for calculating tau</span>
+        <span class="n">tau</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">tau_min</span><span class="p">,</span> <span class="n">trnd</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">trnd</span> <span class="o">+</span> <span class="n">tau_min</span> <span class="o">*</span> <span class="n">tau_min</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">trnd</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">cos_theta</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tau</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">tau</span><span class="p">)</span>
+
+        <span class="c1"># Compute S(E, \theta)</span>
+        <span class="n">s_theta</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">one_minus_cos</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">cos_theta</span>
+        <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mat_nshells</span><span class="p">):</span>
+            <span class="n">U_i</span> <span class="o">=</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">photon_energy</span> <span class="o">&gt;</span> <span class="n">U_i</span><span class="p">:</span>  <span class="c1"># this serves as the Heaviside function</span>
+                <span class="n">left_term</span> <span class="o">=</span> <span class="n">photon_energy</span> <span class="o">*</span> <span class="p">(</span><span class="n">photon_energy</span> <span class="o">-</span> <span class="n">U_i</span><span class="p">)</span> <span class="o">*</span> <span class="n">one_minus_cos</span>
+                <span class="n">p_i_max</span> <span class="o">=</span> <span class="p">(</span><span class="n">left_term</span> <span class="o">-</span> <span class="n">ELECTRON_REST_ENERGY</span> <span class="o">*</span> <span class="n">U_i</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                    <span class="n">ELECTRON_REST_ENERGY</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">left_term</span> <span class="o">+</span> <span class="n">U_i</span> <span class="o">*</span> <span class="n">U_i</span><span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Use several steps to calculate n_{i}(p_{i,max})</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">p_i_max</span>  <span class="c1"># J_{i,0} p_{i,max}</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tmp</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">p_i_max</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">tmp</span><span class="p">)</span>
+                <span class="n">exponent</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tmp</span> <span class="o">*</span> <span class="n">tmp</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">p_i_max</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">tmp</span>
+                <span class="c1"># &#39;tmp&#39; now holds n_{i}(p_{i,max})</span>
+
+                <span class="n">n_p_i_max_vals</span><span class="p">[</span><span class="n">shell</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>  <span class="c1"># for later use in sampling E_prime</span>
+
+                <span class="n">s_theta</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">s_theta</span> <span class="o">+</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span>
+                <span class="p">)</span>  <span class="c1"># Equivalent to: s_pi += f_{i} n_{i}(p_{i,max})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n_p_i_max_vals</span><span class="p">[</span><span class="n">shell</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># s_theta is now set</span>
+
+        <span class="c1"># Compute the term of T(cos_theta) that does not involve S(E,\theta)</span>
+        <span class="n">T_tau_term</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tau</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">kappa</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">tau</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Test for acceptance</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">s_pi</span> <span class="o">*</span> <span class="n">sample_U01</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">T_tau_term</span> <span class="o">*</span> <span class="n">s_theta</span><span class="p">):</span>
+            <span class="k">break</span>
+
+    <span class="c1"># cos_theta is set by now</span>
+
+    <span class="c1"># Choose the active shell</span>
+    <span class="n">p_z_omc</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># p_z / (m_{e} c)</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># emulate do-while loop</span>
+        <span class="c1">#</span>
+        <span class="c1"># Steps:</span>
+        <span class="c1">#   1. Choose a threshold value in range [0, s_theta]</span>
+        <span class="c1">#   2. Accumulate the partial sum of f_{i} \Theta(E - U_i) n_{i}(p_{i,max}) over the electron shells</span>
+        <span class="c1">#   3. Once the partial sum reaches the threshold value, we &#39;return&#39; the most recently considered</span>
+        <span class="c1">#       shell. In this manner, we select the active electron shell with relative probability equal</span>
+        <span class="c1">#       to f_{i} \Theta(E - U_i) n_{i}(p_{i,max}).</span>
+        <span class="c1">#   4. Calculate a random value of p_z</span>
+        <span class="c1">#   5. Reject p_z and start over if p_z &lt; -1 * m_{e} * c</span>
+        <span class="c1">#   6. Calculate F_{max} and F_{p_z} and reject appropriately</span>
+        <span class="c1">#</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">*</span> <span class="n">s_theta</span>
+        <span class="n">accumulator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">active_shell</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mat_nshells</span><span class="p">):</span>
+            <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">shell</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_p_i_max_vals</span><span class="p">[</span><span class="n">shell</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">accumulator</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                <span class="n">active_shell</span> <span class="o">=</span> <span class="n">shell</span>
+                <span class="k">break</span>
+        <span class="c1"># active_shell is now set</span>
+
+        <span class="n">two_A</span> <span class="o">=</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_p_i_max_vals</span><span class="p">[</span><span class="n">active_shell</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">two_A</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">p_z_omc</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">two_A</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p_z_omc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">two_A</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="n">p_z_omc</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">p_z_omc</span> <span class="o">/</span> <span class="n">mat_compton_data</span><span class="p">[</span><span class="n">active_shell</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="p">)</span>  <span class="c1"># Equivalent to: p_z_omc = p_z_omc / (J_{i,0} m_{e} c), completing the calculation</span>
+
+        <span class="k">if</span> <span class="n">p_z_omc</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Calculate F(p_z), where p_z is the PENELOPE-2006 &#39;p_z&#39; divided by (m_{e} c)</span>
+        <span class="n">beta2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">tau</span> <span class="o">*</span> <span class="n">tau</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">cos_theta</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># beta2 = (\beta)^2, where \beta := (c q_{C}) / E</span>
+        <span class="n">beta_tau_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">*</span> <span class="p">(</span><span class="n">tau</span> <span class="o">-</span> <span class="n">cos_theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">beta2</span><span class="p">)</span>
+        <span class="n">F_p_z</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">beta_tau_factor</span> <span class="o">*</span> <span class="n">p_z_omc</span>
+        <span class="n">F_max</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">beta_tau_factor</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">p_z_omc</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># NOTE: when converting to CUDA, I will want to see what happens when I &quot;multiply everything through&quot; by beta2.</span>
+        <span class="c1"># That way, when comparing F_p_z with (\xi * F_max), there will only be multiplications and no divisions</span>
+
+        <span class="k">if</span> <span class="n">sample_U01</span><span class="p">()</span> <span class="o">*</span> <span class="n">F_max</span> <span class="o">&lt;</span> <span class="n">F_p_z</span><span class="p">:</span>
+            <span class="k">break</span>  <span class="c1"># p_z is accepted</span>
+
+    <span class="c1"># p_z_omc is now set. Calculate E_ratio = E_prime / E</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">p_z_omc</span> <span class="o">*</span> <span class="n">p_z_omc</span>
+    <span class="n">term_tau</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">tau</span>
+    <span class="n">term_cos</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">cos_theta</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">term_cos</span> <span class="o">*</span> <span class="n">term_cos</span> <span class="o">-</span> <span class="n">term_tau</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">p_z_omc</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">tmp</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">term_cos</span> <span class="o">+</span> <span class="n">tmp</span>
+
+    <span class="n">E_ratio</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">tmp</span> <span class="o">/</span> <span class="n">term_tau</span>
+
+    <span class="k">return</span> <span class="n">cos_theta</span><span class="p">,</span> <span class="n">E_ratio</span> <span class="o">*</span> <span class="n">photon_energy</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

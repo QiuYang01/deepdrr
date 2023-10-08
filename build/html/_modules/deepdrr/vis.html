@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.vis &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.vis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.vis</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Visualization functions for DeepDRR.</span>
+
+<span class="sd">DeepDRR uses pyvista to visualize the volumes and devices in 3D.</span>
+<span class="sd">This is useful for debugging and verification purposes, but it</span>
+<span class="sd">is not meant to replace a purpose built renderer. To view a scene</span>
+<span class="sd">in detail, save the meshes to disk and open them in a suitable</span>
+<span class="sd">viewer, such as 3D Slicer.</span>
+
+<span class="sd">Note that these visualizations have the same limitations as PyVista.</span>
+<span class="sd">They may not function properly in Jupyter notebooks.</span>
+
+<span class="sd">Any object with the `get_mesh_in_world()` method can be visualized.</span>
+
+<span class="sd">NOTE: often, PyVista will not render in an ssh window. To fix this, try some of the following:</span>
+<span class="sd">```bash</span>
+<span class="sd">#!/bin/bash</span>
+<span class="sd">sudo apt-get install xvfb</span>
+<span class="sd">export DISPLAY=:99.0</span>
+<span class="sd">export PYVISTA_OFF_SCREEN=true</span>
+<span class="sd">export PYVISTA_USE_IPYVTK=true</span>
+<span class="sd">export MESA_GL_VERSION_OVERRIDE=3.2</span>
+<span class="sd">export MESA_GLSL_VERSION_OVERRIDE=150</span>
+<span class="sd">Xvfb :99 -screen 0 1024x768x24 &gt; /dev/null 2&gt;&amp;1 &amp;</span>
+<span class="sd">sleep 3</span>
+<span class="sd">```</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pyvista</span> <span class="k">as</span> <span class="nn">pv</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">geo</span>
+
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="show"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.vis.show">[docs]</a><span class="k">def</span> <span class="nf">show</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">full</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">],</span>
+    <span class="n">background</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">use_cached</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">offscreen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">mesh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pv</span><span class="o">.</span><span class="n">PolyData</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mesh_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the given items in a pyvista window.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        full (bool, optional): [description]. Defaults to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">offscreen</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PYVISTA_OFF_SCREEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PYVISTA_USE_IPYVTK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MESA_GL_VERSION_OVERRIDE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;3.2&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MESA_GLSL_VERSION_OVERRIDE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;150&quot;</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;display: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DISPLAY&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">offscreen</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DISPLAY&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;:99&quot;</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DISPLAY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;:99&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;Xvfb :99 -screen 0 1024x768x24 &gt; /dev/null 2&gt;&amp;1 &amp;&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sleep 3&quot;</span><span class="p">)</span>
+
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Plotter</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show_axes</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">set_background</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">mesh_color</span><span class="p">)</span>
+
+    <span class="n">items</span> <span class="o">=</span> <span class="n">item</span>
+    <span class="n">fulls</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">listify</span><span class="p">(</span><span class="n">full</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
+    <span class="n">use_cacheds</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">listify</span><span class="p">(</span><span class="n">use_cached</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;get_mesh_in_world&quot;</span><span class="p">):</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get_mesh_in_world</span><span class="p">(</span><span class="n">full</span><span class="o">=</span><span class="n">fulls</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">use_cached</span><span class="o">=</span><span class="n">use_cacheds</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">reset_camera</span><span class="p">()</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">auto_close</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">screenshot</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to take screenshot: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+<div class="viewcode-block" id="get_frustum_mesh"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.vis.get_frustum_mesh">[docs]</a><span class="k">def</span> <span class="nf">get_frustum_mesh</span><span class="p">(</span>
+    <span class="n">camera_projection</span><span class="p">:</span> <span class="n">geo</span><span class="o">.</span><span class="n">CameraProjection</span><span class="p">,</span>
+    <span class="n">pixel_size</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">image_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_plane_distance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">full_frustum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pv</span><span class="o">.</span><span class="n">PolyData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a really simple camera mesh for the camera projections.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        camera_projection (geo.CameraProjection): The camera projection.</span>
+<span class="sd">        pixel_size (float): The pixel size in mm.</span>
+<span class="sd">        image_path (str, optional): The path to the image. Defaults to None.</span>
+<span class="sd">        image_plane_distance (float, optional): The distance from the camera to the image plane visualization. Defaults to None,</span>
+<span class="sd">            which uses the distance from the camera to the image plane.</span>
+<span class="sd">        full_frustum (bool, optional): Whether to show the full frustum, or just the principle ray. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pv.PolyData: Mesh representing the C-arm frustum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">focal_length_mm</span> <span class="o">=</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">focal_length</span> <span class="o">*</span> <span class="n">pixel_size</span>
+    <span class="n">sensor_height</span> <span class="o">=</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">sensor_height</span>
+    <span class="n">sensor_width</span> <span class="o">=</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">sensor_width</span>
+    <span class="n">sensor_height_mm</span> <span class="o">=</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">sensor_height</span> <span class="o">*</span> <span class="n">pixel_size</span>
+    <span class="n">sensor_width_mm</span> <span class="o">=</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">sensor_width</span> <span class="o">*</span> <span class="n">pixel_size</span>
+
+    <span class="c1"># In camera frame</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">geo</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">focal_length_mm</span><span class="p">)</span>
+    <span class="n">cx</span> <span class="o">=</span> <span class="n">pixel_size</span> <span class="o">*</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">cx</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">pixel_size</span> <span class="o">*</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">cy</span>
+    <span class="n">ul</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="o">-</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">focal_length_mm</span><span class="p">)</span>
+    <span class="n">ur</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">focal_length_mm</span><span class="p">)</span>
+    <span class="n">bl</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="o">-</span><span class="n">cx</span><span class="p">,</span> <span class="o">-</span><span class="n">cy</span><span class="p">,</span> <span class="n">focal_length_mm</span><span class="p">)</span>
+    <span class="n">br</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="o">-</span><span class="n">cy</span><span class="p">,</span> <span class="n">focal_length_mm</span><span class="p">)</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">full_frustum</span><span class="p">:</span>
+        <span class="n">mesh</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">ur</span><span class="p">,</span> <span class="n">ul</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">br</span><span class="p">,</span> <span class="n">bl</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">ur</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">ul</span><span class="p">,</span> <span class="n">bl</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ul</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ur</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">bl</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mesh</span> <span class="o">+=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Line</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">image_plane_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pixel_size_at_plane</span> <span class="o">=</span> <span class="n">pixel_size</span> <span class="o">/</span> <span class="n">focal_length_mm</span> <span class="o">*</span> <span class="n">image_plane_distance</span>
+        <span class="n">cx_at_plane</span> <span class="o">=</span> <span class="n">pixel_size_at_plane</span> <span class="o">*</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">cx</span>
+        <span class="n">cy_at_plane</span> <span class="o">=</span> <span class="n">pixel_size_at_plane</span> <span class="o">*</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">cy</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">image_plane_distance</span> <span class="o">=</span> <span class="n">focal_length_mm</span>
+        <span class="n">pixel_size_at_plane</span> <span class="o">=</span> <span class="n">pixel_size</span>
+        <span class="n">cx_at_plane</span> <span class="o">=</span> <span class="n">cx</span>
+        <span class="n">cy_at_plane</span> <span class="o">=</span> <span class="n">cy</span>
+
+    <span class="k">if</span> <span class="n">image_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+        <span class="c1"># This is just a hack because some of rob&#39;s images are rotated by 180 degrees</span>
+        <span class="k">if</span> <span class="n">camera_projection</span><span class="o">.</span><span class="n">intrinsic</span><span class="o">.</span><span class="n">fx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="p">[</span><span class="n">pixel_size_at_plane</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">cx_at_plane</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">pixel_size_at_plane</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cy_at_plane</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">image_plane_distance</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="p">[</span><span class="o">-</span><span class="n">pixel_size_at_plane</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cx_at_plane</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">pixel_size_at_plane</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">cy_at_plane</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">image_plane_distance</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Plane</span><span class="p">(</span>
+            <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">focal_length_mm</span><span class="p">],</span>
+            <span class="n">direction</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">i_size</span><span class="o">=</span><span class="n">sensor_width_mm</span><span class="p">,</span>
+            <span class="n">j_size</span><span class="o">=</span><span class="n">sensor_height_mm</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+        <span class="n">geo</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">camera_projection</span><span class="o">.</span><span class="n">world_from_camera3d</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">camera_projection</span><span class="o">.</span><span class="n">world_from_camera3d</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">image</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

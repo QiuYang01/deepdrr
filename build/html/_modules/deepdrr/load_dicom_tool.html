@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deepdrr.load_dicom_tool &mdash; DeepDRR 1.1.0a3 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=9d604193"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            DeepDRR
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../deepdrr.html">deepdrr package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DeepDRR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deepdrr.load_dicom_tool</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deepdrr.load_dicom_tool</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Legacy code for loading tool volumes.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pydicom</span> <span class="k">as</span> <span class="nn">dicom</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skimage.transform</span> <span class="kn">import</span> <span class="n">resize</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">segmentation</span>
+
+
+<span class="n">materials</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;air&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;soft tissue&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;cortical bone&quot;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="replace_material"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.replace_material">[docs]</a><span class="k">def</span> <span class="nf">replace_material</span><span class="p">(</span><span class="n">metal_volume_m_ori</span><span class="p">,</span> <span class="n">smooth_air</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_thresholding_segmentation</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">metal_volume_m_ori</span>
+
+    <span class="c1"># convert hu_values to materials</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">use_thresholding_segmentation</span><span class="p">:</span>
+        <span class="n">materials</span> <span class="o">=</span> <span class="n">conv_hu_to_materials</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">materials</span> <span class="o">=</span> <span class="n">conv_hu_to_materials_thresholding</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">materials</span></div>
+
+
+<div class="viewcode-block" id="load_dicom_CT"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.load_dicom_CT">[docs]</a><span class="k">def</span> <span class="nf">load_dicom_CT</span><span class="p">(</span><span class="n">source_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;./*/*/&quot;</span><span class="p">,</span> <span class="n">fixed_slice_thinckness</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_resolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth_air</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_thresholding_segmentation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;.dcm&quot;</span><span class="p">):</span>
+    <span class="c1">#source_path += &quot;*&quot;+ file_extension</span>
+    <span class="n">source_path</span> <span class="o">+=</span> <span class="s2">&quot;/*.dcm&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">source_path</span><span class="p">))</span>
+    <span class="n">one_slice</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">one_slice</span><span class="p">,</span> <span class="s2">&quot;InstanceNumber&quot;</span><span class="p">):</span>
+        <span class="n">sliceOrder</span> <span class="o">=</span> <span class="p">[</span><span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+            <span class="n">curDCM</span><span class="p">)</span><span class="o">.</span><span class="n">InstanceNumber</span> <span class="k">for</span> <span class="n">curDCM</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sliceOrder</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sliceOrder</span> <span class="o">=</span> <span class="p">[</span><span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+            <span class="n">curDCM</span><span class="p">)</span><span class="o">.</span><span class="n">SliceLocation</span> <span class="k">for</span> <span class="n">curDCM</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sliceOrder</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)]</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+
+    <span class="c1"># Get ref file</span>
+    <span class="n">refDs</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Load dimensions based on the number of rows, columns, and slices (along the Z axis)</span>
+    <span class="n">volume_size</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">refDs</span><span class="o">.</span><span class="n">Rows</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">refDs</span><span class="o">.</span><span class="n">Columns</span><span class="p">),</span> <span class="n">files</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">refDs</span><span class="p">,</span> <span class="s2">&quot;SliceThickness&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Volume has no attribute Slice Thickness, please provide it manually!&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;using fixed slice thickness of:&#39;</span><span class="p">,</span> <span class="n">fixed_slice_thinckness</span><span class="p">)</span>
+        <span class="n">voxel_size</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">refDs</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">refDs</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">fixed_slice_thinckness</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">voxel_size</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">refDs</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">refDs</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">refDs</span><span class="o">.</span><span class="n">SliceThickness</span><span class="p">)]</span>
+
+    <span class="c1"># The array is sized based on &#39;PixelDims&#39;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">volume_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># loop through all the DICOM files</span>
+    <span class="k">for</span> <span class="n">filenameDCM</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="c1"># read the file</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filenameDCM</span><span class="p">)</span>
+        <span class="c1"># store the raw image data</span>
+        <span class="k">if</span> <span class="n">files</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">filenameDCM</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">volume</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">files</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">filenameDCM</span><span class="p">)</span>
+                   <span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">pixel_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="c1"># use intercept point</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">refDs</span><span class="p">,</span> <span class="s2">&quot;RescaleIntercept&quot;</span><span class="p">):</span>
+        <span class="n">volume</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">refDs</span><span class="o">.</span><span class="n">RescaleIntercept</span><span class="p">)</span>
+
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># truncate</span>
+    <span class="k">if</span> <span class="n">truncate</span><span class="p">:</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span><span class="p">[</span><span class="n">truncate</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span><span class="n">truncate</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">truncate</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">truncate</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">truncate</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span><span class="n">truncate</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="c1"># volume = np.flip(volume,2)</span>
+    <span class="c1"># upsample Volume</span>
+    <span class="k">if</span> <span class="n">new_resolution</span><span class="p">:</span>
+        <span class="n">volume</span><span class="p">,</span> <span class="n">volume_size</span><span class="p">,</span> <span class="n">voxel_size</span> <span class="o">=</span> <span class="n">upsample</span><span class="p">(</span>
+            <span class="n">volume</span><span class="p">,</span> <span class="n">new_resolution</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">)</span>
+
+    <span class="c1"># convert hu_values to density</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">conv_hu_to_density</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">smoothAir</span><span class="o">=</span><span class="n">smooth_air</span><span class="p">)</span>
+
+    <span class="c1"># convert hu_values to materials</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">use_thresholding_segmentation</span><span class="p">:</span>
+        <span class="n">materials</span> <span class="o">=</span> <span class="n">conv_hu_to_materials</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">materials</span> <span class="o">=</span> <span class="n">conv_hu_to_materials_thresholding</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">volume</span><span class="p">,</span> <span class="n">densities</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">materials</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">voxel_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_dicom_metal"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.load_dicom_metal">[docs]</a><span class="k">def</span> <span class="nf">load_dicom_metal</span><span class="p">(</span><span class="n">source_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;./*/*/&quot;</span><span class="p">,</span> <span class="n">sortBy</span><span class="o">=</span><span class="s2">&quot;SliceLocation&quot;</span><span class="p">,</span> <span class="n">fixed_slice_thinkness</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_resolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth_air</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_thresholding_segmentation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># Metal Volume</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">source_path</span><span class="p">))</span>
+    <span class="n">one_slice_body</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">one_slice_body</span><span class="p">,</span> <span class="s2">&quot;InstanceNumber&quot;</span><span class="p">):</span>
+        <span class="n">sliceOrder</span> <span class="o">=</span> <span class="p">[</span><span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+            <span class="n">curDCM</span><span class="p">)</span><span class="o">.</span><span class="n">InstanceNumber</span> <span class="k">for</span> <span class="n">curDCM</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sliceOrder</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sliceOrder</span> <span class="o">=</span> <span class="p">[</span><span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+            <span class="n">curDCM</span><span class="p">)</span><span class="o">.</span><span class="n">SliceLocation</span> <span class="k">for</span> <span class="n">curDCM</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sliceOrder</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)]</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+
+    <span class="c1"># Get ref file</span>
+    <span class="n">refDs_body</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">volume_size</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">refDs_body</span><span class="o">.</span><span class="n">Rows</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">refDs_body</span><span class="o">.</span><span class="n">Columns</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">refDs_body</span><span class="o">.</span><span class="n">NumberOfFrames</span><span class="p">)]</span>  <span class="c1"># The last number needs to be changed</span>
+    <span class="n">voxel_spacing</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">refDs_body</span><span class="o">.</span><span class="n">SharedFunctionalGroupsSequence</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">PixelMeasuresSequence</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">PixelSpacing</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">voxel_size</span> <span class="o">=</span> <span class="p">[</span><span class="n">voxel_spacing</span><span class="p">,</span> <span class="n">voxel_spacing</span><span class="p">,</span> <span class="n">voxel_spacing</span><span class="p">]</span>
+
+    <span class="c1"># The array is sized based on &#39;PixelDims&#39;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">volume_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># loop through all the DICOM files</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">refDs_body</span><span class="o">.</span><span class="n">NumberOfFrames</span><span class="p">)):</span>
+        <span class="c1"># read the file</span>
+        <span class="c1"># store the raw image data</span>
+        <span class="n">volume</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">pixel_array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># truncate</span>
+    <span class="k">if</span> <span class="n">truncate</span><span class="p">:</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span><span class="p">[</span><span class="n">truncate</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span><span class="n">truncate</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">truncate</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">truncate</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">truncate</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span><span class="n">truncate</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="c1"># upsample Volume</span>
+    <span class="k">if</span> <span class="n">new_resolution</span><span class="p">:</span>
+        <span class="n">volume</span><span class="p">,</span> <span class="n">volume_size</span><span class="p">,</span> <span class="n">voxel_size</span> <span class="o">=</span> <span class="n">upsample</span><span class="p">(</span>
+            <span class="n">volume</span><span class="p">,</span> <span class="n">new_resolution</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">)</span>
+
+    <span class="c1"># convert hu_values to density</span>
+    <span class="c1"># apply density</span>
+    <span class="n">density_metal</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">volume</span> <span class="o">*</span> <span class="n">density_metal</span>
+
+    <span class="c1"># flip densities</span>
+    <span class="k">if</span> <span class="n">flip</span><span class="p">:</span>
+        <span class="n">densities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">densities</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># convert hu_values to materials</span>
+    <span class="n">materials</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">materials</span><span class="p">[</span><span class="s2">&quot;titanium&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">densities</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">materials</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">voxel_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="upsample"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.upsample">[docs]</a><span class="k">def</span> <span class="nf">upsample</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">newResolution</span><span class="p">,</span> <span class="n">voxelSize</span><span class="p">):</span>
+    <span class="n">upsampled_voxel_size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">voxelSize</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">/</span> <span class="n">newResolution</span><span class="p">)</span>
+    <span class="n">upsampled_volume</span> <span class="o">=</span> <span class="n">resize</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">newResolution</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cval</span><span class="o">=-</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">upsampled_volume</span><span class="p">,</span> <span class="n">upsampled_voxel_size</span><span class="p">,</span> <span class="n">upsampled_voxel_size</span></div>
+
+
+<div class="viewcode-block" id="conv_hu_to_density"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.conv_hu_to_density">[docs]</a><span class="k">def</span> <span class="nf">conv_hu_to_density</span><span class="p">(</span><span class="n">hu_values</span><span class="p">,</span> <span class="n">smoothAir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># Use two linear interpolations from data: (HU,g/cm^3)</span>
+    <span class="c1"># -1000 0.00121000000000000</span>
+    <span class="c1"># -98    0.930000000000000</span>
+    <span class="c1"># -97    0.930486000000000</span>
+    <span class="c1"># 14 1.03000000000000</span>
+    <span class="c1"># 23 1.03100000000000</span>
+    <span class="c1"># 100    1.11990000000000</span>
+    <span class="c1"># 101    1.07620000000000</span>
+    <span class="c1"># 1600   1.96420000000000</span>
+    <span class="c1"># 3000   2.80000000000000</span>
+    <span class="c1"># use fit1 for lower HU: density = 0.001029*HU + 1.030 (fit to first 4)</span>
+    <span class="c1"># use fit2 for upper HU: density = 0.0005886*HU + 1.03 (fit to last 5)</span>
+
+    <span class="c1"># set air densities</span>
+    <span class="k">if</span> <span class="n">smoothAir</span><span class="p">:</span>
+        <span class="n">hu_values</span><span class="p">[</span><span class="n">hu_values</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">900</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span>
+    <span class="c1">#hu_values[hu_values &gt; 600] = 5000;</span>
+    <span class="n">densities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span>
+        <span class="mf">0.001029</span> <span class="o">*</span> <span class="n">hu_values</span> <span class="o">+</span> <span class="mf">1.030</span><span class="p">,</span> <span class="mf">0.0005886</span> <span class="o">*</span> <span class="n">hu_values</span> <span class="o">+</span> <span class="mf">1.03</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">densities</span></div>
+
+
+<div class="viewcode-block" id="conv_hu_to_materials_thresholding"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.conv_hu_to_materials_thresholding">[docs]</a><span class="k">def</span> <span class="nf">conv_hu_to_materials_thresholding</span><span class="p">(</span><span class="n">hu_values</span><span class="p">):</span>
+    <span class="c1"># ranges taken from schneider and Buzug CT</span>
+    <span class="c1">#     materials = np.zeros(hu_values.shape,dtype=np.int32)</span>
+    <span class="c1">#</span>
+    <span class="c1"># materials[hu_values &lt;= -800] = 1</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Lung</span>
+    <span class="c1"># mask = (-800 &lt; hu_values) * (hu_values &lt;= -200)</span>
+    <span class="c1"># materials[mask] = 9;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Fat</span>
+    <span class="c1"># mask = (-200 &lt; hu_values) * (hu_values &lt;= -75)</span>
+    <span class="c1"># materials[mask] = 6;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Connective Tissue</span>
+    <span class="c1"># mask = (-75 &lt; hu_values) * (hu_values &lt;= -5)</span>
+    <span class="c1"># materials[mask] = 8;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Water</span>
+    <span class="c1"># mask = (-5 &lt; hu_values) * (hu_values &lt;= 5)</span>
+    <span class="c1"># materials[mask] = 15;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Soft Tissue</span>
+    <span class="c1"># mask = (5 &lt; hu_values) * (hu_values &lt;= 35)</span>
+    <span class="c1"># materials[mask] = 3;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Muscle</span>
+    <span class="c1"># mask = (35 &lt; hu_values) * (hu_values &lt;= 50)</span>
+    <span class="c1"># materials[mask] = 2;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Blood</span>
+    <span class="c1"># mask = (50 &lt; hu_values) * (hu_values &lt;= 60)</span>
+    <span class="c1"># materials[mask] = 7;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Liver</span>
+    <span class="c1"># mask = (60 &lt; hu_values) * (hu_values &lt;= 100)</span>
+    <span class="c1"># materials[mask] = 13;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Bone Marrow</span>
+    <span class="c1"># mask = (100 &lt; hu_values) * (hu_values &lt;= 400)</span>
+    <span class="c1"># materials[mask] = 12;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Bone</span>
+    <span class="c1"># mask = (400 &lt; hu_values) * (hu_values &lt;= 3000)</span>
+    <span class="c1"># materials[mask] = 4;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Titanium</span>
+    <span class="c1"># mask = 3000 &lt; hu_values</span>
+    <span class="c1"># materials[mask] = 5;</span>
+
+    <span class="c1"># # Air</span>
+    <span class="c1"># materials[hu_values &lt;= -800] = 1</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Soft Tissue</span>
+    <span class="c1"># mask = (-800 &lt; hu_values) * (hu_values &lt;= 500)</span>
+    <span class="c1"># materials[mask] = 2;</span>
+    <span class="c1">#</span>
+    <span class="c1"># # Bone</span>
+    <span class="c1"># mask = 500 &lt; hu_values</span>
+    <span class="c1"># materials[mask] = 3;</span>
+
+    <span class="n">materials</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Air</span>
+    <span class="n">materials</span><span class="p">[</span><span class="s2">&quot;air&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hu_values</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">800</span>
+
+    <span class="c1"># Soft Tissue</span>
+    <span class="n">materials</span><span class="p">[</span><span class="s2">&quot;soft tissue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">800</span> <span class="o">&lt;</span> <span class="n">hu_values</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">hu_values</span> <span class="o">&lt;=</span> <span class="mi">350</span><span class="p">)</span>
+
+    <span class="c1"># Bone</span>
+    <span class="n">materials</span><span class="p">[</span><span class="s2">&quot;bone&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">350</span> <span class="o">&lt;</span> <span class="n">hu_values</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">materials</span></div>
+
+
+<div class="viewcode-block" id="conv_hu_to_materials"><a class="viewcode-back" href="../../deepdrr.html#deepdrr.load_dicom_tool.conv_hu_to_materials">[docs]</a><span class="k">def</span> <span class="nf">conv_hu_to_materials</span><span class="p">(</span><span class="n">hu_values</span><span class="p">):</span>
+    <span class="n">segmentation_network</span> <span class="o">=</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">SegmentationNet</span><span class="p">()</span>
+    <span class="n">materials</span> <span class="o">=</span> <span class="n">segmentation_network</span><span class="o">.</span><span class="n">segment</span><span class="p">(</span><span class="n">hu_values</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">materials</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Benjamin D. Killeen, Cong Gao, Jan-Nico Zaech, and Mathias Unberath.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
